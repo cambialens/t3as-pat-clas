@@ -11,10 +11,10 @@ do
     echo "Downloading $url..."
     wget --no-clobber $url
 done <<'EoF'
-http://www.cooperativepatentclassification.org/cpc/CPCSchemeXML201312.zip
-http://www.wipo.int/ipc/itos4ipc/ITSupport_and_download_area/20140101/MasterFiles/ipcr_scheme_20140101.zip
-http://www.wipo.int/ipc/itos4ipc/ITSupport_and_download_area/Documentation/20140101/ipcr_scheme_1-02.dtd
-https://eipweb.uspto.gov/2013/ClassDefinitions/classdefs.zip
+http://www.cooperativepatentclassification.org/cpc/interleaved/CPCSchemeXML201611.zip
+http://www.wipo.int/ipc/itos4ipc/ITSupport_and_download_area/20160101/MasterFiles/ipc_scheme_20160101.zip
+http://www.wipo.int/ipc/itos4ipc/ITSupport_and_download_area/Documentation/20160101/ipc_scheme_3-1.zip
+https://bulkdata.uspto.gov/data2/patent/classification/classdefs.zip
 https://github.com/mar10/fancytree/releases/download/v2.0.0-4/jquery.fancytree-2.0.0-4.zip
 EoF
 
@@ -25,10 +25,10 @@ touch xclassdef.dtd
 
 # The USPC zip file contains a corrupted entry for class 560.
 # This reproduces a manual edit to produce a fixed version classdefsWith560fixed.zip
-unzip classdefs.zip classdefs201312/class_560.xml
-patch classdefs201312/class_560.xml class_560.xml.diff
+unzip classdefs.zip classdefs201410/class_560.xml
+patch classdefs201410/class_560.xml class_560.xml.diff
 cp classdefs.zip classdefsWith560fixed.zip
-zip -f classdefsWith560fixed.zip classdefs201312/class_560.xml
+zip -f classdefsWith560fixed.zip classdefs201410/class_560.xml
 
 # Install jquery-ui-fancytree to where pat-clas-ui expects it
 FT_DIR=../pat-clas-ui/fancytree

@@ -51,8 +51,8 @@ object Load {
   val log = LoggerFactory.getLogger(getClass)
 
   case class Config(
-    cpcZipFile: File = new File("CPCSchemeXML201312.zip"),
-    ipcZipFile: File = new File("ipcr_scheme_20140101.zip"),
+    cpcZipFile: File = new File("CPCSchemeXML201611.zip"),
+    ipcZipFile: File = new File("ipc_scheme_20160101.zip"),
     uspcZipFile: File = new File("classdefsWith560fixed.zip"),
     dburl: String = "jdbc:h2:file:./patClasDb",
     jdbcDriver: String = "org.h2.Driver",
@@ -82,7 +82,7 @@ object Load {
 
     opt[File]('u', "uspcZipFile") action { (x, c) =>
       c.copy(uspcZipFile = x)
-    } text (s"path to USPC definitions in zipped XML, default ${defValue.uspcZipFile.getPath} (source https://eipweb.uspto.gov/2013/ClassDefinitions)")
+    } text (s"path to USPC definitions in zipped XML, default ${defValue.uspcZipFile.getPath} (source https://bulkdata.uspto.gov/data2/patent/classification/)")
     opt[File]('v', "uspcIndexDir") action { (x, c) =>
       c.copy(ipcIndexDir = x)
     } text (s"path to IPC search index dir, default ${defValue.uspcIndexDir.getPath} (need not pre-exist)")
@@ -142,7 +142,7 @@ object Load {
         // An item for top level ClassificationItems to refer to as their "parent" (to satisfy the foreign key constraint)
         // forceInsert overrides the autoInc id, works with H2 but may not work on all databases
         // With these databases some other means will be required to insert this row.
-        cpcs forceInsert ClassificationItem(Some(CPCdb.topLevel), CPCdb.topLevel, false, false, false, "2013-01-01", 0, "parent", "<text>none</text>", "<text>none</text>")
+        cpcs forceInsert ClassificationItem(Some(CPCdb.topLevel), CPCdb.topLevel, false, false, false, "2016-01-01", 0, "parent", "<text>none</text>", "<text>none</text>")
 
         def process(t: TreeNode[CPCParser.CPCNode], parentId: Int) = {
           dao.insertTree(t.map(_.classificationItem), parentId) // insert tree of ClassificationItems into db
@@ -198,6 +198,26 @@ object Load {
           indexer.addTree(t) // add to search index
         }
 
+        /** 
+          * 2014 data has 1 zipped xml file containing both en and fr data. The structure begins with:
+          * 
+          * <?xml version="1.0" encoding="utf-8"?>
+          * <!DOCTYPE revisionPeriods SYSTEM "ipcr_scheme_1-02.dtd">
+          * <revisionPeriods><revisionPeriod>
+          * <ipcEdition  edition="20140101" ipcLevel="a" documentRoot="">
+          *    <en>
+          *      <staticIpc edition="20140101" lang="EN" documentRoot="" >
+          *        <ipcEntry kind="s" symbol="A" ipcLevel="A" entryType="K" lang="EN">
+          * 
+          * 2016 data is split into two zipped xml files: EN_ipc_scheme_20160101.xml and FR_ipc_scheme_20160101.xml
+          * The above structure has been removed and the ipcEntry elements are now at the top level.
+          * 
+          * <?xml version='1.0' encoding='utf-8'?>
+          * <IPCScheme xmlns="http://www.wipo.int/classifications/ipc/masterfiles" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+          *   edition="20160101" lang="EN" xsi:schemaLocation="http://www.wipo.int/classifications/ipc/masterfiles ipc_scheme_3-1.xsd">
+          *   <ipcEntry kind="s" symbol="A">
+          *     <ipcEntry kind="s" symbol="A" ipcLevel="A" entryType="K" lang="EN">
+          */
         for(zipFile <- managed(new ZipFile(c.ipcZipFile))) {
           zipFile.entries foreach { e =>
             // parent for English IPCEntries (skipping French for now)
@@ -205,7 +225,6 @@ object Load {
             IPCParser.parse(parent) foreach (process(_, IPCdb.topLevel))
           }
         }
-
       }
       
       log.info(s"Building IPC suggestions ...")
