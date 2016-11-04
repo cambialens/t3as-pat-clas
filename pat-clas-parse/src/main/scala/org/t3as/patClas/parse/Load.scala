@@ -82,7 +82,7 @@ object Load {
 
     opt[File]('u', "uspcZipFile") action { (x, c) =>
       c.copy(uspcZipFile = x)
-    } text (s"path to USPC definitions in zipped XML, default ${defValue.uspcZipFile.getPath} (source https://eipweb.uspto.gov/2013/ClassDefinitions)")
+    } text (s"path to USPC definitions in zipped XML, default ${defValue.uspcZipFile.getPath} (source https://bulkdata.uspto.gov/data2/patent/classification/)")
     opt[File]('v', "uspcIndexDir") action { (x, c) =>
       c.copy(ipcIndexDir = x)
     } text (s"path to IPC search index dir, default ${defValue.uspcIndexDir.getPath} (need not pre-exist)")
@@ -205,7 +205,6 @@ object Load {
             IPCParser.parse(parent) foreach (process(_, IPCdb.topLevel))
           }
         }
-
       }
       
       log.info(s"Building IPC suggestions ...")

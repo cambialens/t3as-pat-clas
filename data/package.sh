@@ -29,7 +29,7 @@
 # Log in to EC2, S3 bucket t3as-webapps
 # upload the 3 *.tar.gz files created by package.sh
 # 
-# Do Mats' magic deplopyment stuff.
+# Do Mats' magic deployment stuff.
 # 
 # # update poms for ongoing dev
 # mvn versions:set -DnewVersion=1.0.4-SNAPSHOT
