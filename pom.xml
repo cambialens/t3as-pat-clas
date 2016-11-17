@@ -42,8 +42,8 @@
     <scala.version>2.10.4</scala.version>
     <lucene.version>4.8.1</lucene.version>
     <!-- works with jersey 2.7 and jackson 2.4.0-rc2 -->
-    <jersey.version>2.9</jersey.version>
-    <jackson.version>2.3.2</jackson.version> <!-- See: https://jersey.java.net/project-info/2.9/jersey/project/json-jackson/dependencies.html -->
+    <jersey.version>2.24</jersey.version>
+    <jackson.version>2.8.4</jackson.version> <!-- See: https://jersey.java.net/project-info/2.9/jersey/project/json-jackson/dependencies.html -->
   </properties>
 
   <build>

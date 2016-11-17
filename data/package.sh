@@ -52,7 +52,7 @@ do
     echo "Creating $n-$ver.tar.gz ..."
     cp $src tmp/$n/$n.war
     cp patClasDb.h2.db tmp/$n/data
-    cp --recursive {cpc,ipc,uspc}Index* tmp/$n/data
+    cp -r {cpc,ipc,uspc}Index* tmp/$n/data
     tar cfz $n-$ver.tar.gz -C tmp $n
 done
 

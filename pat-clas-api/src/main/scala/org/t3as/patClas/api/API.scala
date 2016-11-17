@@ -21,6 +21,8 @@ package org.t3as.patClas.api
 
 import java.io.Closeable
 
+import scala.collection.mutable
+
 case class HitSymbol(raw: String, formatted: String)
 case class Suggestions(exact: List[String], fuzzy: List[String])
 
@@ -39,6 +41,8 @@ case class IPCHit(score: Float, symbol: HitSymbol, level: Int, kind: String, tex
 case class USPCDescription(id: Int, symbol: String, classTitle: String, subClassTitle: String, subClassDescription: String, text: String)
 case class USPCHit(score: Float, symbol: HitSymbol, classTitle: String, subClassTitle: String, subClassDescription: String, text: String) extends HitBase
 
+case class BulkSymbolLookup(symbols: mutable.ArraySeq[String], format: String)
+
 object API {
   trait SearchService[H <: HitBase] {
     // tried Option[String] for symbol, but Jersey didn't deserialise it in PatClasService
@@ -48,6 +52,8 @@ object API {
 
   trait LookupService[D] {
     def ancestorsAndSelf(symbol: String, format: String): List[D]
+    // FIX BW 16/11/2016 make this non mutable
+    def bulkAncestorsAndSelf(bulkSymbolLookup: BulkSymbolLookup): Map[String, List[D]]
     def children(parentId: Int, format: String): List[D]
   }
 

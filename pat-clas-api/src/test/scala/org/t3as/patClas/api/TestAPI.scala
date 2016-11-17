@@ -22,13 +22,14 @@ package org.t3as.patClas.api
 import java.util.{List => jList}
 
 import scala.collection.JavaConversions.seqAsJavaList
-
 import org.scalatest.{FlatSpec, Matchers}
 import org.slf4j.LoggerFactory
 import org.t3as.patClas.api.API.{LookupService, SearchService}
 import org.t3as.patClas.api.javaApi.{Factory => jFactory}
-
 import API.{Factory, LookupService, SearchService}
+
+import scala.collection.mutable
+import scala.collection.mutable.MutableList
 
 class TestAPI extends FlatSpec with Matchers {
   val log = LoggerFactory.getLogger(getClass)
@@ -45,6 +46,8 @@ class TestAPI extends FlatSpec with Matchers {
     val f = new Factory {
       val cpc = new SearchService[CPCHit] with LookupService[CPCDescription] {
         def ancestorsAndSelf(symbol: String, format: String) = List(cpcDescr1)
+        def bulkAncestorsAndSelf(bulkSymbolLookup: BulkSymbolLookup): Map[String, List[CPCDescription]] = 
+          Map(bulkSymbolLookup.symbols.head -> List(cpcDescr1)) 
         def children(parentId: Int, format: String) = List(cpcDescr2)
         def search(q: String, stem: Boolean, symbol: String) = List(cpcHit) 
         def suggest(prefix: String, num: Int) = Suggestions(cpcSugExact, cpcSugFuzzy)
@@ -52,6 +55,7 @@ class TestAPI extends FlatSpec with Matchers {
       
       val ipc = new SearchService[IPCHit] with LookupService[IPCDescription] {
         def ancestorsAndSelf(symbol: String, format: String): List[IPCDescription] = ???
+        def bulkAncestorsAndSelf(bulkSymbolLookup: BulkSymbolLookup): Map[String, List[IPCDescription]] = ???
         def children(parentId: Int, format: String): List[IPCDescription] = ???
         def search(q: String, stem: Boolean, symbol: String): List[IPCHit] = ??? 
         def suggest(prefix: String, num: Int): Suggestions = ???
@@ -59,6 +63,7 @@ class TestAPI extends FlatSpec with Matchers {
       
       val uspc = new SearchService[USPCHit] with LookupService[USPCDescription] {
         def ancestorsAndSelf(symbol: String, format: String): List[USPCDescription] = ???
+        def bulkAncestorsAndSelf(bulkSymbolLookup: BulkSymbolLookup): Map[String, List[USPCDescription]] = ???
         def children(parentId: Int, format: String): List[USPCDescription] = ???
         def search(q: String, stem: Boolean, symbol: String): List[USPCHit] = ??? 
         def suggest(prefix: String, num: Int): Suggestions = ???
@@ -72,6 +77,10 @@ class TestAPI extends FlatSpec with Matchers {
     val anc = jf.getCPCLookup.ancestorsAndSelf("sym", "plain")
     anc.size should be(1)
     anc.get(0) should be(cpcDescr1)
+
+    val bulkAnc = jf.getCPCLookup.bulkAncestorsAndSelf(List("sym"), "plain")
+    bulkAnc.size should be(1)
+    bulkAnc.get("sym").get(0) should be(cpcDescr1)
     
     val chd = jf.getCPCLookup.children(0, "plain")
     chd.size should be(1)

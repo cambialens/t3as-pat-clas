@@ -20,20 +20,25 @@
 package org.t3as.patClas.service
 
 import java.io.File
+
 import scala.language.implicitConversions
 import scala.slick.driver.JdbcProfile
 import scala.slick.jdbc.JdbcBackend.Database
 import org.apache.commons.dbcp2.BasicDataSource
-import org.apache.lucene.store.{ Directory, FSDirectory }
+import org.apache.lucene.store.{Directory, FSDirectory}
 import org.slf4j.LoggerFactory
-import org.t3as.patClas.api.{ CPCDescription, CPCHit, IPCDescription, IPCHit, Suggestions, USPCDescription, USPCHit }
-import org.t3as.patClas.api.API.{ Factory, LookupService, SearchService }
-import org.t3as.patClas.api.javaApi.{ Factory => JF }
-import org.t3as.patClas.common.db.{ CPCdb, IPCdb, USPCdb }
-import org.t3as.patClas.common.search.{ Constants, ExactSuggest, FuzzySuggest, Searcher, Suggest }
-import org.t3as.patClas.common.search.Suggest.{ exactSugFile, fuzzySugFile }
-import javax.ws.rs.{ GET, Path, Produces, QueryParam }
+import org.t3as.patClas.api._
+import org.t3as.patClas.api.API.{Factory, LookupService, SearchService}
+import org.t3as.patClas.api.javaApi.{Factory => JF}
+import org.t3as.patClas.common.db.{CPCdb, IPCdb, USPCdb}
+import org.t3as.patClas.common.search._
+import org.t3as.patClas.common.search.Suggest.{exactSugFile, fuzzySugFile}
+import javax.ws.rs.{Path, _}
 import javax.ws.rs.core.MediaType
+
+import scala.collection.mutable.MutableList
+import collection.immutable.HashMap
+import scala.collection.mutable
 
 object PatClasService {
   var s: Option[PatClasService] = None
@@ -182,6 +187,22 @@ class CPCService extends SearchService[CPCHit] with LookupService[CPCDescription
     }
   }
 
+  @Path("bulkAncestorsAndSelf")
+  @POST
+  @Consumes(Array(MediaType.APPLICATION_JSON))
+  @Produces(Array(MediaType.APPLICATION_JSON))
+  override def bulkAncestorsAndSelf(bulkSymbolLookup: BulkSymbolLookup) = {
+    val fmt = getToText(bulkSymbolLookup.format)
+    // FIX BW 16/11/2016 get rid of this mutable
+    val results: collection.mutable.HashMap[String, List[CPCDescription]] = collection.mutable.HashMap()
+    database withSession { implicit session =>
+      bulkSymbolLookup.symbols.foreach(symbol => {
+        results.put(symbol, cpcDb.getSymbolWithAncestors(symbol.trim).map(_.toDescription(fmt)))
+      })
+    }
+    results.toMap
+  }
+
   @Path("children")
   @GET
   @Produces(Array(MediaType.APPLICATION_JSON))
@@ -220,6 +241,22 @@ class IPCService extends SearchService[IPCHit] with LookupService[IPCDescription
     }
   }
 
+  @Path("bulkAncestorsAndSelf")
+  @POST
+  @Consumes(Array(MediaType.APPLICATION_JSON))
+  @Produces(Array(MediaType.APPLICATION_JSON))
+  override def bulkAncestorsAndSelf(bulkSymbolLookup: BulkSymbolLookup) = {
+    val fmt = getToText(bulkSymbolLookup.format)
+    // FIX BW 16/11/2016 get rid of this mutable
+    val results: collection.mutable.HashMap[String, List[IPCDescription]] = collection.mutable.HashMap()
+    database withSession { implicit session =>
+      bulkSymbolLookup.symbols.foreach(symbol => {
+        results.put(symbol, ipcDb.getSymbolWithAncestors(symbol.trim).map(_.toDescription(fmt)))
+      })
+    }
+    results.toMap
+  }
+
   @Path("children")
   @GET
   @Produces(Array(MediaType.APPLICATION_JSON))
@@ -256,6 +293,22 @@ class USPCService extends SearchService[USPCHit] with LookupService[USPCDescript
     database withSession { implicit session =>
       uspcDb.getSymbolWithAncestors(symbol.trim).map(_.toDescription(fmt))
     }
+  }
+
+  @Path("bulkAncestorsAndSelf")
+  @POST
+  @Consumes(Array(MediaType.APPLICATION_JSON))
+  @Produces(Array(MediaType.APPLICATION_JSON))
+  override def bulkAncestorsAndSelf(bulkSymbolLookup: BulkSymbolLookup) = {
+    val fmt = getToText(bulkSymbolLookup.format)
+    // FIX BW 16/11/2016 get rid of this mutable
+    val results: collection.mutable.HashMap[String, List[USPCDescription]] = collection.mutable.HashMap()
+    database withSession { implicit session =>
+      bulkSymbolLookup.symbols.foreach(symbol => {
+        results.put(symbol, uspcDb.getSymbolWithAncestors(symbol.trim).map(_.toDescription(fmt)))
+      })
+    }
+    results.toMap
   }
 
   @Path("children")

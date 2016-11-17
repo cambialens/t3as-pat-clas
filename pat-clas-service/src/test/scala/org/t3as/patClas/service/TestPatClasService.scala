@@ -34,6 +34,7 @@ import org.t3as.patClas.api.Suggestions
 class TestPatClasService extends FlatSpec with Matchers {
   val log = LoggerFactory.getLogger(getClass)
 
+  // FIX BW 16/11/2016 test bulk as well
   "CPCService" should "retrieve ancestorsAndSelf" in {
     val l8 = TreeNode(ClassificationItem(None, -1, false, true, false, "2013-01-01", 8, "B29C31/002", "title8", "notes8"), Seq())
     val l7 = TreeNode(ClassificationItem(None, -1, false, true, false, "2013-01-01", 7, "B29C31/00", "title7", "notes7"), Seq(l8))

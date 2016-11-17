@@ -20,30 +20,41 @@
 package org.t3as.patClas.api.javaApi
 
 import java.io.Closeable
-import java.util.List
+import java.util.{List => JList, Map => JMap}
 
-import scala.collection.JavaConversions.seqAsJavaList
-
-import org.t3as.patClas.api.{CPCHit, HitBase, IPCHit, USPCHit}
+import scala.collection.JavaConverters._
+import org.t3as.patClas.api._
 import org.t3as.patClas.api.API.{Factory => sFactory, LookupService => sLookupService, SearchService => sSearchService}
 
+import scala.collection.mutable
 
+
+/**
+  * Results are implicity converted to Java objects
+  * @param l
+  * @tparam D
+  */
 class LookupAdapter[D](l: sLookupService[D]) {
-  def ancestorsAndSelf(symbol: String, format: String): List[D] = l.ancestorsAndSelf(symbol, format)
-  def children(parentId: Int, format: String): List[D] = l.children(parentId, format)
+  def ancestorsAndSelf(symbol: String, format: String): JList[D] = l.ancestorsAndSelf(symbol, format).asJava
+  def bulkAncestorsAndSelf(symbols: JList[String], format: String): JMap[String, JList[D]] = {
+    val a : mutable.ArraySeq[String] = mutable.ArraySeq() ++ symbols.asScala
+    val map: Map[String, List[D]] = l.bulkAncestorsAndSelf(BulkSymbolLookup(a, format))
+    map.mapValues(v => v.asJava).asJava
+  }
+  def children(parentId: Int, format: String): JList[D] = l.children(parentId, format).asJava
 }
 
 trait Suggestions {
-  def getExact: List[String]
-  def getFuzzy: List[String]
+  def getExact: JList[String]
+  def getFuzzy: JList[String]
 }
 
 class SearchAdapter[H <: HitBase](s: sSearchService[H]) {
-  def search(q: String, stem: Boolean = true, symbol: String = null): List[H] = s.search(q, stem, symbol)
+  def search(q: String, stem: Boolean = true, symbol: String = null): JList[H] = s.search(q, stem, symbol).asJava
   def suggest(prefix: String, num: Int): Suggestions = new Suggestions {
     val x = s.suggest(prefix, num)
-    override def getExact = x.exact
-    override def getFuzzy = x.fuzzy 
+    override def getExact = x.exact.asJava
+    override def getFuzzy = x.fuzzy.asJava
   }
 }
 

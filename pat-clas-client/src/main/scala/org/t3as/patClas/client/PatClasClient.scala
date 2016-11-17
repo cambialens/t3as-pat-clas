@@ -21,12 +21,14 @@ package org.t3as.patClas.client
 
 import org.glassfish.jersey.client.ClientConfig
 import org.slf4j.LoggerFactory
-import org.t3as.patClas.api.{CPCDescription, CPCHit, HitBase, IPCDescription, IPCHit, Suggestions, USPCDescription, USPCHit}
+import org.t3as.patClas.api._
 import org.t3as.patClas.api.API.{Factory, LookupService, SearchService}
 import org.t3as.patClas.api.javaApi.{Factory => JF}
-
 import javax.ws.rs.client.ClientBuilder
 import javax.ws.rs.core.MediaType
+
+import scala.collection.mutable
+import scala.collection.mutable.MutableList
 
 // path = "http://localhost:8080/pat-clas-service/rest/v1.0"
 class PatClasClient(path: String) extends Factory {
@@ -54,6 +56,9 @@ class PatClasClient(path: String) extends Factory {
       .queryParam("format", format)
       .request(MediaType.APPLICATION_JSON_TYPE)
       .get(classOf[Array[D]]).toList
+
+    // FIX BW 16/11/2016 Implement
+    override def bulkAncestorsAndSelf(bulkSymbolLookup: BulkSymbolLookup): Map[String, List[D]] = ???
 
     override def children(parentId: Int, format: String) = c.path("children")
       .queryParam("parentId", parentId.toString)
