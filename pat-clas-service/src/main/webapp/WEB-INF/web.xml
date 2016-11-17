@@ -11,11 +11,34 @@
     <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
     <init-param>
       <param-name>jersey.config.server.provider.packages</param-name>
-      <param-value>org.t3as.patClas.service</param-value>
+      <param-value>
+        io.swagger.jaxrs.listing,
+        org.t3as.patClas.service
+      </param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
 
+  <!--<servlet>-->
+    <!--<servlet-name>Jersey2Config</servlet-name>-->
+    <!--<servlet-class>io.swagger.jersey.config.JerseyJaxrsConfig</servlet-class>-->
+    <!--<init-param>-->
+      <!--<param-name>api.version</param-name>-->
+      <!--<param-value>v1.0</param-value>-->
+    <!--</init-param>-->
+    <!--<init-param>-->
+      <!--<param-name>swagger.api.basepath</param-name>-->
+      <!--<param-value>http://localhost:8080/pat-clas-service</param-value>-->
+    <!--</init-param>-->
+    <!--<load-on-startup>2</load-on-startup>-->
+  <!--</servlet>-->
+
+  <servlet>
+    <servlet-name>swagger-bootstrap</servlet-name>
+    <servlet-class>org.t3as.patClas.swagger.SwaggerBootstrap</servlet-class>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+  
   <servlet-mapping>
     <servlet-name>jersey-serlvet</servlet-name>
     <url-pattern>/rest/*</url-pattern>

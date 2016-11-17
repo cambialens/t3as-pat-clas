@@ -20,31 +20,28 @@
 package org.t3as.patClas.service
 
 import java.io.File
+import javax.ws.rs.core.MediaType
+import javax.ws.rs.{Path, _}
+
+import io.swagger.annotations.Api
+import org.apache.commons.dbcp2.BasicDataSource
+import org.apache.lucene.store.{Directory, FSDirectory}
+import org.slf4j.LoggerFactory
+import org.t3as.patClas.api.API.{Factory, LookupService, SearchService}
+import org.t3as.patClas.api._
+import org.t3as.patClas.api.javaApi.{Factory => JF}
+import org.t3as.patClas.common.search._
 
 import scala.language.implicitConversions
 import scala.slick.driver.JdbcProfile
 import scala.slick.jdbc.JdbcBackend.Database
-import org.apache.commons.dbcp2.BasicDataSource
-import org.apache.lucene.store.{Directory, FSDirectory}
-import org.slf4j.LoggerFactory
-import org.t3as.patClas.api._
-import org.t3as.patClas.api.API.{Factory, LookupService, SearchService}
-import org.t3as.patClas.api.javaApi.{Factory => JF}
-import org.t3as.patClas.common.db.{CPCdb, IPCdb, USPCdb}
-import org.t3as.patClas.common.search._
-import org.t3as.patClas.common.search.Suggest.{exactSugFile, fuzzySugFile}
-import javax.ws.rs.{Path, _}
-import javax.ws.rs.core.MediaType
-
-import scala.collection.mutable.MutableList
-import collection.immutable.HashMap
-import scala.collection.mutable
 
 object PatClasService {
   var s: Option[PatClasService] = None
 
   /** methods invoked by ServletListener configured in web.xml */
   def init = s = Some(new PatClasService)
+
   def close = s.map(_.close)
 
   def testInit(p: PatClasService) = s = Some(p)
@@ -53,7 +50,9 @@ object PatClasService {
 }
 
 class PatClasService {
-  import org.t3as.patClas.common.Util, Util.get
+
+  import org.t3as.patClas.common.Util
+  import Util.get
 
   val log = LoggerFactory.getLogger(getClass)
 
@@ -82,7 +81,7 @@ class PatClasService {
 
   val slickDriver: JdbcProfile = Util.getObject(get("slick.driver"))
 
-  import org.t3as.patClas.common.db.{ CPCdb, IPCdb, USPCdb }
+  import org.t3as.patClas.common.db.{CPCdb, IPCdb, USPCdb}
 
   val cpcDb = new CPCdb(slickDriver)
   val ipcDb = new IPCdb(slickDriver)
@@ -118,21 +117,21 @@ class PatClasService {
   }
 
   val cpcSearcher = {
-    import org.t3as.patClas.common.CPCUtil._, IndexFieldName._
+    import org.t3as.patClas.common.CPCUtil._
     new Searcher[CPCHit](textFields, unstemmedTextFields, Constants.cpcAnalyzer, hitFields, indexDir("cpc.index.path"), mkHit)
   }
 
   val cpcSuggest = mkCombinedSuggest(new File(get("cpc.index.path")))
 
   val ipcSearcher = {
-    import org.t3as.patClas.common.IPCUtil._, IndexFieldName._
+    import org.t3as.patClas.common.IPCUtil._
     new Searcher[IPCHit](textFields, unstemmedTextFields, Constants.ipcAnalyzer, hitFields, indexDir("ipc.index.path"), mkHit)
   }
 
   val ipcSuggest = mkCombinedSuggest(new File(get("ipc.index.path")))
 
   val uspcSearcher = {
-    import org.t3as.patClas.common.USPCUtil._, IndexFieldName._
+    import org.t3as.patClas.common.USPCUtil._
     new Searcher[USPCHit](textFields, unstemmedTextFields, Constants.uspcAnalyzer, hitFields, indexDir("uspc.index.path"), mkHit)
   }
 
@@ -151,15 +150,18 @@ class PatClasService {
     val cpc = new CPCService
     val ipc = new IPCService
     val uspc = new USPCService
+
     override def close = PatClasService.close
   }
 
   // for local (in-process) use from Java
-  import org.t3as.patClas.api.javaApi.{ Factory => JF }
+  import org.t3as.patClas.api.javaApi.{Factory => JF}
+
   def toJavaApi = new JF(factory)
 }
 
 // no-args ctor used by Jersey, which creates multiple instances
+@Api
 @Path("/v1.0/CPC")
 class CPCService extends SearchService[CPCHit] with LookupService[CPCDescription] {
   val svc = PatClasService.service // singleton for things that must be shared across multiple instances; must be initialised first
@@ -217,6 +219,7 @@ class CPCService extends SearchService[CPCHit] with LookupService[CPCDescription
 @Path("/v1.0/IPC")
 class IPCService extends SearchService[IPCHit] with LookupService[IPCDescription] {
   val svc = PatClasService.service
+
   import svc._
 
   log.debug("IPCService:ctor")
@@ -271,6 +274,7 @@ class IPCService extends SearchService[IPCHit] with LookupService[IPCDescription
 @Path("/v1.0/USPC")
 class USPCService extends SearchService[USPCHit] with LookupService[USPCDescription] {
   val svc = PatClasService.service
+
   import svc._
 
   log.debug("USPCService:ctor")

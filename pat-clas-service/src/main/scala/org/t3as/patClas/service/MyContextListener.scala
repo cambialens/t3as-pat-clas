@@ -23,6 +23,7 @@ import javax.servlet.{ServletContextEvent, ServletContextListener}
 
 class MyContextListener extends ServletContextListener {
 
+  // FIX BW 17/11/2016 Hook the SwaggerBootstrap in here rather than in BootstrapServlet?
   override def contextInitialized(event: ServletContextEvent) = PatClasService.init
   
   override def contextDestroyed(event: ServletContextEvent) = PatClasService.close
