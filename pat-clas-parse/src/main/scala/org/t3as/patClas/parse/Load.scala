@@ -230,7 +230,7 @@ object Load {
         if (!MTable.getTables("uspc").list.isEmpty) uspcs.ddl.drop
         uspcs.ddl.create
         StaticQuery.updateNA("""GRANT SELECT ON "uspc" TO READONLY""").execute
-        
+
         uspcs forceInsert UsClass(Some(USPCdb.topId), USPCdb.topXmlId, USPCdb.topXmlId, "symbol", None, None, None, "<text>none</text>")
 
         def process(c: UsClass) = {
@@ -252,18 +252,17 @@ object Load {
             try {
               val root = XML.withSAXParser(saxp).load(zipFile.getInputStream(ze))
               log.debug("root.label = " + root.label) // tagsoup wraps our top level class element in html/body
-              val usClass = if (root.label == "html") (root \ "body" \ "class")(0) else root
+              val usClass = if (root.label == "html") (root \ "body" \ "class") (0) else root
               USPCParser.parse(usClass, process)
             } catch {
               case NonFatal(e) => log.error("Can't process zip entry: " + ze.getName, e)
             }
           }
         }
+      }
       
       log.info(s"Building USPC suggestions ...")
       doSuggestions(c.uspcIndexDir, getUSPCSuggestionsSource)
-
-      }
 
     } else log.info(s"File ${c.uspcZipFile} not found, so skipping USPC load")
   }
