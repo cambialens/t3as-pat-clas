@@ -21,6 +21,7 @@ package org.t3as.patClas.parse
 
 import java.io.File
 import java.util.zip.ZipFile
+
 import scala.collection.JavaConversions.enumerationAsScalaIterator
 import scala.slick.jdbc.JdbcBackend.{Database, Session}
 import scala.slick.jdbc.StaticQuery

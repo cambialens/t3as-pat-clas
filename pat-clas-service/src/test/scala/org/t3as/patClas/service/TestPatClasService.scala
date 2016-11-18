@@ -56,7 +56,7 @@ class TestPatClasService extends FlatSpec with Matchers {
     {    
       val hits = srv.search("Symbol:B29C3*")
       log.debug(s"hits = $hits")
-      hits.size should be(3) // matches 2 x "B29C31/00", 1 x "B29C31/002", 0 x "B29C"
+      hits.size should be(3) // matches 1 x "B29C31/00", 1 x "B29C31/002", 0 x "B29C"
     }
  
     database withSession { implicit session =>
@@ -68,7 +68,7 @@ class TestPatClasService extends FlatSpec with Matchers {
 
       cpcDb.insertTree(l5, CPCdb.topLevel)
 
-      srv.ancestorsAndSelf("B29C31/00", "xml") zip Seq(l5, l6, l7) foreach {
+      srv.ancestorsAndSelf("B29C31/00", "xml") zip Seq(l5, l7) foreach {
         case (desc, n) => {
           desc.symbol should be(n.value.symbol)
           desc.level should be(n.value.level)

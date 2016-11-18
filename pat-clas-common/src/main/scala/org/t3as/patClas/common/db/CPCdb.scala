@@ -78,8 +78,27 @@ class CPCdb(val profile: JdbcProfile) {
   }
 
   def insertTree(n: TreeNode[ClassificationItem], parentId: Int)(implicit session: Session): Unit = {
-    val id = compiled.insert += n.value.copy(parentId = parentId)
-    n.children foreach { n => insertTree(n, id) }
+    
+    // Dupe logic with indexing, maybe move into parse/post parse somehow
+    // Remove level 3 and 6 as they break the tree structure and [seem to] serve no purpose to us.
+    // 
+    // In the XML at level 3/4 (and 6/7) the following occurs
+    // <classification-item ... level="2" ... sort-key="B" ... > 
+    // <classification-item ... level="3" ... sort-key="B01" ... > 
+    // <classification-item ... level="4" ... sort-key="B01" ... > -- Nested under itself (B01 at level 3)
+    // <classification-item ... level="4" ... sort-key="B02" ... > -- Nested under it's sibling (B01 at level 3)
+    // 
+    // level 2 B                                             level 2 B         
+    // level 3 +- B01      -> remove extra level (3/6) ->    level 3 |   
+    // level 4     +- B01                                    level 4 +- B01
+    // level 4     +- B02                                    level 4 +- B02
+    
+    if (n.value.level != 3 && n.value.level != 6) {
+      val id = compiled.insert += n.value.copy(parentId = parentId)
+      n.children foreach { n => insertTree(n, id) }
+    } else {
+      n.children foreach { n => insertTree(n, parentId) }
+    }
   }
 
   /** Get max level ClassificationItem for a given symbol.

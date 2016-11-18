@@ -27,10 +27,11 @@ import org.apache.lucene.search.suggest.InputIterator
 import org.apache.lucene.store.FSDirectory
 import org.apache.lucene.util.BytesRef
 import org.slf4j.LoggerFactory
-import org.t3as.patClas.common.{CPCUtil, IPCUtil, USPCUtil}
+import org.t3as.patClas.common.{CPCUtil, IPCUtil, TreeNode, USPCUtil}
 import org.t3as.patClas.common.Util.toText
 import org.t3as.patClas.common.search.{Constants, Indexer}
 import org.t3as.patClas.common.search.Indexer.{keywordFieldType, textFieldType, textFieldUnstemmedType}
+import org.t3as.patClas.parse.CPCParser.CPCNode
 
 object IndexerFactory {
   val log = LoggerFactory.getLogger(getClass)
@@ -87,7 +88,31 @@ object IndexerFactory {
     doc
   }
 
-  def getCPCIndexer(indexDir: File) = new Indexer(Constants.cpcAnalyzer, FSDirectory.open(indexDir), cpcToDoc)
+  def getCPCIndexer(indexDir: File) = new Indexer(Constants.cpcAnalyzer, FSDirectory.open(indexDir), cpcToDoc) {
+    
+    override def addTree(t: TreeNode[CPCNode]): Unit = {
+
+      // Dupe logic with the db inserts, maybe move into parse/post parse somehow
+      // Remove level 3 and 6 as they break the tree structure and [seem to] serve no purpose to us.
+      // 
+      // In the XML at level 3/4 (and 6/7) the following occurs
+      // <classification-item ... level="2" ... sort-key="B" ... > 
+      // <classification-item ... level="3" ... sort-key="B01" ... > 
+      // <classification-item ... level="4" ... sort-key="B01" ... > -- Nested under itself (B01 at level 3)
+      // <classification-item ... level="4" ... sort-key="B02" ... > -- Nested under it's sibling (B01 at level 3)
+      // 
+      // level 2 B                                             level 2 B         
+      // level 3 +- B01      -> remove extra level (3/6) ->    level 3 |   
+      // level 4     +- B01                                    level 4 +- B01
+      // level 4     +- B02                                    level 4 +- B02
+
+      val level: Int = t.value.classificationItem.level
+      if (level != 3 && level != 6) {
+        add(t.value)
+      }       
+      t.children foreach { t => addTree(t) }
+    }
+  }
 
   def getCPCSuggestionsSource(indexDir: File) = {
     import org.t3as.patClas.common.CPCUtil.unstemmedTextFields

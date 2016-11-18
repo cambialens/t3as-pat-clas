@@ -61,15 +61,14 @@ class TestCPCdb extends FlatSpec with Matchers {
       }
       
       val list = dao.compiled.getBySymbol("B29C31/00").list
-      list.size should be(2)
-      list.exists(c => c.symbol == "B29C31/00" && c.level == 6) should be(true)
+      list.size should be(1)
       list.exists(c => c.symbol == "B29C31/00" && c.level == 7) should be(true)
 
       val l7list = dao.compiled.getBySymbolLevel("B29C31/00", 7).list
       l7list.size should be(1)
       l7list.exists(c => c.symbol == "B29C31/00" && c.level == 7) should be(true)
 
-      dao.getSymbolWithAncestors("B29C31/00") zip Seq((1, 0, 5, "B29C"), (2, 1, 6, "B29C31/00"), (3, 2, 7, "B29C31/00")) foreach {
+      dao.getSymbolWithAncestors("B29C31/00") zip Seq((1, 0, 5, "B29C"), (2, 1, 7, "B29C31/00")) foreach {
         case (c, (id, parentId, level, symbol)) => {
           c.id should be (Some(id))         // autoInc id starts at 1
           c.parentId should be (parentId)   // insertTree fixes the parentId (-1 above is ignored)
