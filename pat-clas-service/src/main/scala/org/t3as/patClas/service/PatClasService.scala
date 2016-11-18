@@ -179,13 +179,30 @@ class CPCService extends SearchService[CPCHit] with LookupService[CPCDescription
   @Produces(Array(MediaType.APPLICATION_JSON))
   override def suggest(@QueryParam("prefix") prefix: String, @QueryParam("num") num: Int) = cpcSuggest(prefix, num)
 
+
+  // FIX BW 19/11/2016 Probably doesn't belong here
+  def ensureSubgroup(symbol: String): String = {
+    // CPC symbol made up of:
+    //      section: A-H,Y 
+    //      class: 2 digit number
+    //      subclass: A-Z
+    //      maingroup: 1 to 9999, can be blank if classification in subclasses only
+    //      subgroup: 00 to 999999, can be blank if classification in subclasses only
+
+    // Add /00 to maingroup if present
+    // B42F 1 =>  B42F 1/00
+    // if maingroup present without subgroup add /00 subgroup
+    "^[A-HY]\\d{2}[A-Z]\\d{1,4}$".r.findFirstIn(symbol).fold(symbol)(_ => symbol + "/00")
+  }
+
+
   @Path("ancestorsAndSelf")
   @GET
   @Produces(Array(MediaType.APPLICATION_JSON))
   override def ancestorsAndSelf(@QueryParam("symbol") symbol: String, @QueryParam("format") format: String) = {
     val fmt = getToText(format)
     database withSession { implicit session =>
-      cpcDb.getSymbolWithAncestors(symbol.trim).map(_.toDescription(fmt))
+      cpcDb.getSymbolWithAncestors(ensureSubgroup(symbol.trim)).map(_.toDescription(fmt))
     }
   }
 
@@ -199,7 +216,7 @@ class CPCService extends SearchService[CPCHit] with LookupService[CPCDescription
     val results: collection.mutable.HashMap[String, List[CPCDescription]] = collection.mutable.HashMap()
     database withSession { implicit session =>
       bulkSymbolLookup.symbols.foreach(symbol => {
-        results.put(symbol, cpcDb.getSymbolWithAncestors(symbol.trim).map(_.toDescription(fmt)))
+        results.put(symbol, cpcDb.getSymbolWithAncestors(ensureSubgroup(symbol.trim)).map(_.toDescription(fmt)))
       })
     }
     results.toMap
