@@ -1,6 +1,6 @@
 # Patent Classification API
 
-This API provides endpoints to search and retrieve classification related data. This document currently covers CPC data byt the other (deprecated) classification schemes (USPC and IPC) are implemented in a similar manner.
+This API provides endpoints to search and retrieve classification related data. This document currently covers CPC data but the other (deprecated) classification schemes (USPC and IPC) are implemented in a similar manner.
  
 An explanation of the CPC classification scheme can be found at Wikipedia: https://en.wikipedia.org/wiki/Cooperative_Patent_Classification
 
