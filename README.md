@@ -111,7 +111,7 @@ You can access the services from anything capable of issuing HTTP requests:
 
 - the provided user interface <http://pat-clas.t3as.org/> demonstrates access via jQuery AJAX
 - web browser:
-<http://pat-clas.t3as.org/pat-clas-service/rest/v1.0/CPC/search?q=locomotive&stem=false&symbolPrefix=F2>
+<http://pat-clas.t3as.org/pat-clas-service/rest/v1.0/CPC/search?q=locomotive&stem=false&symbol=F2>
 - command line:
  `curl http://pat-clas.t3as.org/pat-clas-service/rest/v1.0/CPC/children?parentId=0&format=XML | python -mjson.tool`
 - Java API: [pat-clas-examples/src/main/java/org/t3as/patClas/examples/javaApi/JavaExample.java](pat-clas-examples/src/main/java/org/t3as/patClas/examples/javaApi/JavaExample.java)
