@@ -1,0 +1,87 @@
+{
+	"variables": [],
+	"info": {
+		"name": "pat-clas",
+		"_postman_id": "ea3c4cae-1fa9-9c23-922b-f286d09f702e",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "CPC/search",
+			"request": {
+				"url": "{{url}}/rest/v1.0/CPC/search?q=locomotive&stem=false&symbol=F2",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "CPC/ancestorsAndSelf",
+			"request": {
+				"url": "{{url}}/rest/v1.0/CPC/ancestorsAndSelf?symbol=F21&format=text",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "CPC/children",
+			"request": {
+				"url": "{{url}}/rest/v1.0/CPC/children?parentId=591&format=text",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "CPC/bulkAncestorsAndSelf",
+			"request": {
+				"url": "{{url}}/rest/v1.0/CPC/bulkAncestorsAndSelf",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"symbols\" : [\"F22G7/105\", \"E04C1/42\", \"E01C17/00\", \"F21S4/20\", \"F21V33/006\", \"F21Y2101/00\"],\n\t\"format\" : \"text\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "CPC/suggest",
+			"request": {
+				"url": "{{url}}/rest/v1.0/CPC/suggest?prefix=foo&num=5",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
