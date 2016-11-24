@@ -32,7 +32,7 @@ Request Params:
 Content-Type: application/json
 
 An array of data containing an element for each symbol in the hierarchy: 
-* id : the ID of the classification symbol
+* id : the internal system ID of the classification symbol
 * symbol : the classification symbol
 * level : the level of the classification in the official hierarchy. Higher values are further from the root. Note that for CPC, levels 3 and 6 will be missing, but the level ordering from high to low is still consistent.
 * classTitle : The title for the classification.
@@ -103,7 +103,7 @@ Request Body:
 Content-Type: application/json
 
 Map of request symbol to the data for that symbol and it's ancestors. Data returned for each symbol is the same as for single request above.
-* id : the ID of the classification symbol
+* id : the internal system ID of the classification symbol
 * symbol : the classification symbol
 * level : the level of the classification in the official hierarchy. Higher values are further from the root. Nnote that for CPC, levels 3 and 6 will be missing, but the level ordering from high to low is still consistent.  
 * classTitle : The title for the classification.
@@ -122,8 +122,6 @@ http://dev.lens.org/patclass/rest/v1.0/CPC/bulkAncestorsAndSelf
 ```
 
 Response:
-
-eg: http://dev.lens.org/patclass/rest/v1.0/CPC/ancestorsAndSelf?symbol=F24B13/04&format=text
 
 ```
 {
@@ -148,6 +146,89 @@ eg: http://dev.lens.org/patclass/rest/v1.0/CPC/ancestorsAndSelf?symbol=F24B13/04
 }
 ```
 
+### Get the data for the children of a symbol
+
+#### Request
+
+Method: GET 
+
+Request Params:
+* id : Required, the internal system id of the classification symbol (code)
+* format : Optional, values are 'text' or 'xml', default is 'text'
+
+#### Response
+
+Content-Type: application/json
+
+An array of data containing an element for each child symbol: 
+* id : the internal system ID of the classification symbol
+* symbol : the classification symbol
+* level : the level of the classification in the official hierarchy. Higher values are further from the root. Note that for CPC, levels 3 and 6 will be missing, but the level ordering from high to low is still consistent.
+* classTitle : The title for the classification.
+* notesAndWarnings : Notes about how the classification is applied.
+
+
+#### Example
+
+http://dev.lens.org/patclass/rest/v1.0/CPC/children?parentId=591&format=text
+
+
+Response:
+
+```
+[
+  {
+    "id": 170532,
+    "symbol": "F24B1/00",
+    "level": 7,
+    "classTitle": "Stoves or ranges",
+    "notesAndWarnings": ""
+  },
+  {
+    "id": 170616,
+    "symbol": "F24B13/00",
+    "level": 7,
+    "classTitle": "Details solely applicable to stoves or ranges burning solid fuels\ncomponent parts or accessories for stoves with open-fires\nF24B1/191\n; removing ash, clinker or slag from combustion chambers\nF23J1/00\n; removing solid residues from passages or chambers beyond the fire\nF23J3/00\n; joints or connections for chimneys or flues\nF23J13/04\n; mouths or inlet holes for chimneys or flues\nF23J13/06\n; means for supervising combustion\nF23M11/04",
+    "notesAndWarnings": ""
+  },
+  {
+    "id": 170623,
+    "symbol": "F24B15/00",
+    "level": 7,
+    "classTitle": "Implements for use in connection with stoves or ranges\nash sieves\nin general\nB07B\n; fire lighters\nC10L11/00\n; removal of ashes\nF23J\n; other devices for igniting\nF23Q",
+    "notesAndWarnings": ""
+  },
+  {
+    "id": 170588,
+    "symbol": "F24B3/00",
+    "level": 7,
+    "classTitle": "Heaters not covered by group\nF24B1/00\n, e.g. charcoal brazier\nfor cooking\nA47J27/00\nto\nA47J37/00",
+    "notesAndWarnings": ""
+  },
+  {
+    "id": 170589,
+    "symbol": "F24B5/00",
+    "level": 7,
+    "classTitle": "Combustion-air or flue-gas circulation in or around stoves or ranges\nstoves with open fires with air-handling means\nF24B1/185",
+    "notesAndWarnings": ""
+  },
+  {
+    "id": 170602,
+    "symbol": "F24B7/00",
+    "level": 7,
+    "classTitle": "Stoves, ranges or flue-gas ducts, with additional provisions for convection heating\nstoves with open fires characterised by use of heat exchange means\nF24B1/185\n; air heaters having heat generating means\nF24H3/00",
+    "notesAndWarnings": ""
+  },
+  {
+    "id": 170611,
+    "symbol": "F24B9/00",
+    "level": 7,
+    "classTitle": "Stoves, ranges or flue-gas ducts, with additional provisions for heating water\nF24B1/182\n,\nF24B1/183\ntake precedence",
+    "notesAndWarnings": ""
+  }
+]
+```
+
 ## Searching for classification symbols
 
 ### Auto complete of classification symbols and words found within their text content
@@ -156,7 +237,7 @@ eg: http://dev.lens.org/patclass/rest/v1.0/CPC/ancestorsAndSelf?symbol=F24B13/04
 
 Method: GET 
 
-Request Body:
+Request Params:
 * prefix : Required, the prefix of the string to complete
 * num : Required, the number of results to return
 
@@ -195,6 +276,7 @@ Response:
 
 Method: GET
 
+Request Params:
 * q : Required, the search string. Lucene search query language syntax is http://lucene.apache.org/core/4_8_1/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description. Available search fields are:
   * Symbol - Keyword field. The classification symbol.
   * Level - Numeric field. The level of the classification in the official hierarchy. Higher values are further from the root. Note that for CPC, levels 3 and 6 will be missing, but the level ordering from high to low is still consistent.
