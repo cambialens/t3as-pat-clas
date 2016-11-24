@@ -52,7 +52,7 @@ object Load {
   val log = LoggerFactory.getLogger(getClass)
 
   case class Config(
-    cpcZipFile: File = new File("CPCSchemeXML201312.zip"),
+    cpcZipFile: File = new File("CPCSchemeXML201611.zip"),
     ipcZipFile: File = new File("ipcr_scheme_20140101.zip"),
     uspcZipFile: File = new File("classdefsWith560fixed.zip"),
     dburl: String = "jdbc:h2:file:./patClasDb",
@@ -143,7 +143,7 @@ object Load {
         // An item for top level ClassificationItems to refer to as their "parent" (to satisfy the foreign key constraint)
         // forceInsert overrides the autoInc id, works with H2 but may not work on all databases
         // With these databases some other means will be required to insert this row.
-        cpcs forceInsert ClassificationItem(Some(CPCdb.topLevel), CPCdb.topLevel, false, false, false, "2013-01-01", 0, "parent", "<text>none</text>", "<text>none</text>")
+        cpcs forceInsert ClassificationItem(Some(CPCdb.topLevel), CPCdb.topLevel, false, false, false, "2016-01-01", 0, "parent", "<text>none</text>", "<text>none</text>")
 
         def process(t: TreeNode[CPCParser.CPCNode], parentId: Int) = {
           dao.insertTree(t.map(_.classificationItem), parentId) // insert tree of ClassificationItems into db

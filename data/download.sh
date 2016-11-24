@@ -5,13 +5,13 @@ set -e
 D_DIR=`pwd`
 
 # Download CPC, IPC and USPC patent classification schemes.
-# While we're at it, also get the jquery-ui-fancytree widget required by pat-clas-ui.
+# While we're at it, also get the jquery-ui-fancytree widget required by pat-clas-ui. 
 while read url
 do
     echo "Downloading $url..."
     wget --no-clobber $url
 done <<'EoF'
-http://www.cooperativepatentclassification.org/cpc/CPCSchemeXML201312.zip
+http://www.cooperativepatentclassification.org/cpc/interleaved/CPCSchemeXML201611.zip
 http://www.wipo.int/ipc/itos4ipc/ITSupport_and_download_area/20140101/MasterFiles/ipcr_scheme_20140101.zip
 http://www.wipo.int/ipc/itos4ipc/ITSupport_and_download_area/Documentation/20140101/ipcr_scheme_1-02.dtd
 https://bulkdata.uspto.gov/data2/patent/classification/classdefs.zip
