@@ -10,6 +10,7 @@ Resources:
 - web service source code (GPL'ed) and this documentation <https://github.com/NICTA/t3as-pat-clas>
 - user interface source code (GPL'ed) and detailed documentation [pat-clas-ui](pat-clas-ui)
 - live site user interface and web services <http://pat-clas.t3as.org/>
+- web service documentation [pat-clas-service](pat-clas-service)
 
 # Services
 

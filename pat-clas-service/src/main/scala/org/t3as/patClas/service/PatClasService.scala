@@ -161,8 +161,6 @@ class PatClasService {
   def toJavaApi = new JF(factory)
 }
 
-// no-args ctor used by Jersey, which creates multiple instances
-@SwaggerDefinition(info = @Info( description = "Gets the weather", version = "V12.0.12", title = "The Weather API", termsOfService = "http://theweatherapi.io/terms.html" ))
 @Api
 @Path("/v1.0/CPC")
 class CPCService extends SearchService[CPCHit] with LookupService[CPCDescription] {

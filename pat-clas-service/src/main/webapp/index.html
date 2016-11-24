@@ -37,7 +37,12 @@
       if (url && url.length > 1) {
         url = decodeURIComponent(url[1]);
       } else {
-        url = "/pat-clas-service/rest/swagger.json";
+        // Different path for prod/dev
+        var pathArray = window.location.pathname.split( '/' );
+        if (pathArray.length > 1)
+          url = "/" + pathArray[1] + "/rest/swagger.json";
+        else
+          url = window.location + "/rest/swagger.json";
       }
 
       hljs.configure({
