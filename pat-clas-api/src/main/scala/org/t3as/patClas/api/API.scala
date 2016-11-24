@@ -41,6 +41,7 @@ case class IPCHit(score: Float, symbol: HitSymbol, level: Int, kind: String, tex
 case class USPCDescription(id: Int, symbol: String, classTitle: String, subClassTitle: String, subClassDescription: String, text: String)
 case class USPCHit(score: Float, symbol: HitSymbol, classTitle: String, subClassTitle: String, subClassDescription: String, text: String) extends HitBase
 
+// FIX BW 24/11/2016 make the Seq a set to remove duplicates
 case class BulkSymbolLookup(symbols: mutable.ArraySeq[String], format: String)
 
 object API {
