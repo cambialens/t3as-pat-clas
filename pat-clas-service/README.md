@@ -1,9 +1,11 @@
 # Patent Classification API
 
-This API provides endpoints to search and retrieve classification related data. This document currently covers CPC data but the other (deprecated) classification schemes (USPC and IPC) are implemented in a similar manner.
+The Patent Classification API provides endpoints to search and retrieve classification related data. This document currently covers CPC data but the other (deprecated) classification schemes (USPC and IPC) are implemented in a similar manner.
  
 An explanation of the CPC classification scheme can be found at Wikipedia: https://en.wikipedia.org/wiki/Cooperative_Patent_Classification
 
+A Postman collection for the API can be found [here](src/test/postman/). The environment variable `url` should be defined and set to http://dev.lens.org/patclass.
+  
 
 ## Getting Data for classification symbols
 
@@ -14,8 +16,8 @@ An explanation of the CPC classification scheme can be found at Wikipedia: https
 Method: GET 
 
 Request Params:
-* symbol = classification symbol (code)
-* result format = text|xml
+* symbol : Required, the classification symbol (code)
+* format : Optional, values are 'text' or 'xml', default is 'text'
 
 
 #### Response
@@ -25,7 +27,7 @@ Content-Type: application/json
 An array of data containing an element for each symbol in the hierarchy: 
 * id : the ID of the classification symbol
 * symbol : the classification symbol
-* level : the level of the classification in the official hierarchy. Higher values are further from the root. Note that for CPC, levels 3 and 6 will be missing, but the level ordering from high to low is still consistent.  
+* level : the level of the classification in the official hierarchy. Higher values are further from the root. Note that for CPC, levels 3 and 6 will be missing, but the level ordering from high to low is still consistent.
 * classTitle : The title for the classification.
 * notesAndWarnings : Notes about how the classification is applied.
 
@@ -86,8 +88,8 @@ Response:
 Method: POST 
 
 Request Body:
-* symbols = array of classification symbols (codes)
-* result format = text|xml
+* symbols : Required, array of classification symbols (codes)
+* format : Optional, values are 'text' or 'xml', default is 'text'
 
 #### Response
 
@@ -141,27 +143,27 @@ eg: http://dev.lens.org/patclass/rest/v1.0/CPC/ancestorsAndSelf?symbol=F24B13/04
 
 ## Searching for classification symbols
 
-### Auto complete of words found within classification symbols and their text content
+### Auto complete of classification symbols and words found within their text content
 
 #### Request
 
 Method: GET 
 
 Request Body:
-* prefix = The prefix of the string to complete
-* num = The number of results to return
+* prefix : Required, the prefix of the string to complete
+* num : Required, the number of results to return
 
 #### Response
 
 Content-Type: application/json
 
-An array of 'exact' and and an array of 'fuzzy' string matches for the prefix. TODO: what does 'fuzzy' match actually match?
+An array of 'exact' and and an array of 'fuzzy' string matches for the prefix. Exact matches duplicated in the fuzzy results are removed. 
 
 #### Example
 
 Request:
 
-http://dev.lens.org/patclass/rest/v1.0/CPC/suggest?prefix=foo&num=5
+http://dev.lens.org/patclass/rest/v1.0/CPC/suggest?prefix=fuzz&num=5
 
 
 Response:
@@ -169,13 +171,13 @@ Response:
 ```
 {
   "exact": [
-    "<b>foo</b>t",
-    "<b>foo</b>d",
-    "<b>foo</b>twear",
-    "<b>foo</b>dstuffs",
-    "<b>foo</b>tball"
+    "<b>fuzz</b>y",
+    "<b>fuzz</b>'s"
   ],
-  "fuzzy": []
+  "fuzzy": [
+    "<b>fuze</b>s",
+    "<b>fuze</b>"
+  ]
 }
 ```
 
@@ -186,26 +188,27 @@ Response:
 
 Method: GET
 
-* q : the search string to search classification text for (lucene search query language), available fields are:
-  ** ???
-  ** ???
-* prefix : prefix of a symbol to restrict the search to - default is no prefix restriction
-* stem : should search strings be stemmed or not - default true. Eg a search for 'locomotives' would match 'locomotive' if stemming is true (default) 'stemmed'
+* q : Required, the search string. Lucene search query language syntax is http://lucene.apache.org/core/4_8_1/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description. Available search fields are:
+  * Symbol - Keyword field. The classification symbol.
+  * Level - Numeric field. The level of the classification in the official hierarchy. Higher values are further from the root. Note that for CPC, levels 3 and 6 will be missing, but the level ordering from high to low is still consistent.
+  * ClassTitle : Text field. The title of the classification.
+  * NotesAndWarnings : Text field. Notes about how the classification is applied. 
+  * ClassTitleUnstemmed, NotesAndWarningsUnstemmed, HTextUnstemmed  - unstemmed versions of the above.  
+  * HText - text body of a classification appended to that of all its ancestors.
+* prefix : Optional, prefix of a symbol to restrict the search to - default is no prefix restriction.
+* stem : Optional, should search terms be stemmed or not - default true. Eg a search for 'locomotives' would match 'locomotive' if stemming is true (default) 'stemmed'
 
 #### Response
 
 Content-Type: application/json
 
-A list of search results containing data for the matching classifications:
+A list of search results containing data for the matching classifications. Matches in text fields wil be highlighted like `<span class="hlight">matching text</span>`.
 
 * score : result score
-* symbol : raw and formatted versions of the matched symbol. Use the formatted version. TODO Do these ever differ?
-* level : the level of the classification in the official hierarchy. Higher values are further from the root. Nnote that for CPC, levels 3 and 6 will be missing, but the level ordering from high to low is still consistent.        
+* symbol : raw and formatted versions of the matched symbol. For CPC these are the same.
+* level : the level of the classification in the official hierarchy. Higher values are further from the root. Nnte that for CPC, levels 3 and 6 will be missing, but the level ordering from high to low is still consistent.        
 * classTitle : The title for the classification.
 * notesAndWarnings : Notes about how the classification is applied.
-
-
-Map of request symbol to the data for that symbol and it's ancestors. Data returned for each symbol is the same as for single request above.
  
 #### Example
 
@@ -248,19 +251,4 @@ Response:
     "notesAndWarnings": ""
   }
 ]
-```
-
-
-
-```
-{
-  "exact": [
-    "<b>foo</b>t",
-    "<b>foo</b>d",
-    "<b>foo</b>twear",
-    "<b>foo</b>dstuffs",
-    "<b>foo</b>tball"
-  ],
-  "fuzzy": []
-}
 ```

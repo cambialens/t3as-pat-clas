@@ -23,7 +23,7 @@ import java.io.File
 import javax.ws.rs.core.MediaType
 import javax.ws.rs.{Path, _}
 
-import io.swagger.annotations.Api
+import io.swagger.annotations.{Api, SwaggerDefinition, Info}
 import org.apache.commons.dbcp2.BasicDataSource
 import org.apache.lucene.store.{Directory, FSDirectory}
 import org.slf4j.LoggerFactory
@@ -35,6 +35,7 @@ import org.t3as.patClas.common.search._
 import scala.language.implicitConversions
 import scala.slick.driver.JdbcProfile
 import scala.slick.jdbc.JdbcBackend.Database
+
 
 object PatClasService {
   var s: Option[PatClasService] = None
@@ -161,6 +162,7 @@ class PatClasService {
 }
 
 // no-args ctor used by Jersey, which creates multiple instances
+@SwaggerDefinition(info = @Info( description = "Gets the weather", version = "V12.0.12", title = "The Weather API", termsOfService = "http://theweatherapi.io/terms.html" ))
 @Api
 @Path("/v1.0/CPC")
 class CPCService extends SearchService[CPCHit] with LookupService[CPCDescription] {
@@ -180,7 +182,7 @@ class CPCService extends SearchService[CPCHit] with LookupService[CPCDescription
   override def suggest(@QueryParam("prefix") prefix: String, @QueryParam("num") num: Int) = cpcSuggest(prefix, num)
 
 
-  // FIX BW 19/11/2016 Probably doesn't belong here
+  // FIX BW 19/11/2016 Probably doesn't belong here, test
   def ensureSubgroup(symbol: String): String = {
     // CPC symbol made up of:
     //      section: A-H,Y 
@@ -190,7 +192,7 @@ class CPCService extends SearchService[CPCHit] with LookupService[CPCDescription
     //      subgroup: 00 to 999999, can be blank if classification in subclasses only
 
     // Add /00 to maingroup if present
-    // B42F 1 =>  B42F 1/00
+    // B42F1 =>  B42F1/00
     // if maingroup present without subgroup add /00 subgroup
     "^[A-HY]\\d{2}[A-Z]\\d{1,4}$".r.findFirstIn(symbol).fold(symbol)(_ => symbol + "/00")
   }
@@ -233,6 +235,7 @@ class CPCService extends SearchService[CPCHit] with LookupService[CPCDescription
   }
 }
 
+@Api
 @Path("/v1.0/IPC")
 class IPCService extends SearchService[IPCHit] with LookupService[IPCDescription] {
   val svc = PatClasService.service
@@ -288,6 +291,7 @@ class IPCService extends SearchService[IPCHit] with LookupService[IPCDescription
   }
 }
 
+@Api
 @Path("/v1.0/USPC")
 class USPCService extends SearchService[USPCHit] with LookupService[USPCDescription] {
   val svc = PatClasService.service
