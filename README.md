@@ -50,12 +50,12 @@ search indices, you'll need to either set system properties or edit this propert
 
 ## Downloading Data
 
-From the data directory, run `download.sh` to:
+Run `download.sh` located in data directory, to:
 
  - download classification source data;
- - download and install the `fancytree` jQuery widget into `pat-clas-ui`;
  - create an empty US DTD file; and
  - patch corrupt data for US class 560.
+ - download and install the `fancytree` jQuery widget into `pat-clas-ui`;
 
 ## Creating Deployable Packages
 

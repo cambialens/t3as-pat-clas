@@ -54,7 +54,7 @@ object Load {
   case class Config(
     cpcZipFile: File = new File("CPCSchemeXML201611.zip"),
     ipcZipFile: File = new File("ipcr_scheme_20140101.zip"),
-    uspcZipFile: File = new File("classdefsWith560fixed.zip"),
+    uspcZipFile: File = new File("classdefs-patched.zip"),
     dburl: String = "jdbc:h2:file:./patClasDb",
     jdbcDriver: String = "org.h2.Driver",
     slickDriver: String = "scala.slick.driver.H2Driver",

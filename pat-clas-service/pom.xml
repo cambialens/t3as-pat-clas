@@ -185,7 +185,7 @@
             <id>prod</id>
             <!-- For a production build you must specify this profile: mvn -Pprod -->
             <properties>
-                <data>/opt/pat-clas-service/data</data>
+                <data>/ebs/data/patclass</data>
             </properties>
         </profile>
 
@@ -195,7 +195,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <data>../data</data>
+                <data>${project.basedir}/../data</data>
             </properties>
         </profile>
     </profiles>
