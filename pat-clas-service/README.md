@@ -4,14 +4,14 @@ The Patent Classification API provides endpoints to search and retrieve classifi
  
 An explanation of the CPC classification scheme can be found at Wikipedia: https://en.wikipedia.org/wiki/Cooperative_Patent_Classification
 
-A Postman collection for the API can be found [here](src/test/postman/). The environment variable `url` should be defined and set to http://dev.lens.org/patclass.
+A Postman collection for the API can be found [here](src/test/postman/). The environment variable `url` should be defined and set to http://patclass.api.lens.org.
 
 
 Still TODO: Complete Auto-Generated Swagger Documentation
  
 * Swagger Annotations documentation https://github.com/swagger-api/swagger-core/wiki/Annotations-1.5.X
-* Swagger service endpoint is installed at  http://localhost:8080:pat-clas-service/rest/swagger-ui.json
-* Swagger UI is already installed under t3as-pat-clas/pat-clas-service/src/main/webapp, access at http://localhost:8080/pat-clas-service
+* Swagger service endpoint is installed at  http://localhost:8888:rest/swagger-ui.json
+* Swagger UI is already installed under pat-clas-service/src/main/webapp, access at http://localhost:8888/patclass
   
 
 ## Getting Data for classification symbols
@@ -41,7 +41,7 @@ An array of data containing an element for each symbol in the hierarchy:
 
 #### Example:
 
-http://dev.lens.org/patclass/rest/v1.0/CPC/ancestorsAndSelf?symbol=F24B13/04&format=text
+http://patclass.api.lens.org/rest/v1.0/CPC/ancestorsAndSelf?symbol=F24B13/04&format=text
 
 Response:
 
@@ -112,7 +112,7 @@ Map of request symbol to the data for that symbol and it's ancestors. Data retur
 
 #### Example 
 
-http://dev.lens.org/patclass/rest/v1.0/CPC/bulkAncestorsAndSelf
+http://patclass.api.lens.org/rest/v1.0/CPC/bulkAncestorsAndSelf
 
 ```
 {
@@ -170,7 +170,7 @@ An array of data containing an element for each child symbol:
 
 #### Example
 
-http://dev.lens.org/patclass/rest/v1.0/CPC/children?parentId=591&format=text
+http://patclass.api.lens.org/rest/v1.0/CPC/children?parentId=591&format=text
 
 
 Response:
@@ -251,7 +251,7 @@ An array of 'exact' and and an array of 'fuzzy' string matches for the prefix. E
 
 Request:
 
-http://dev.lens.org/patclass/rest/v1.0/CPC/suggest?prefix=fuzz&num=5
+http://patclass.api.lens.org/rest/v1.0/CPC/suggest?prefix=fuzz&num=5
 
 
 Response:
@@ -303,7 +303,7 @@ A list of search results containing data for the matching classifications. Match
 
 Request:
 
-http://dev.lens.org/patclass/rest/v1.0/CPC/search?q=locomotive&stem=true&symbol=F22G7
+http://patclass.api.lens.org/rest/v1.0/CPC/search?q=locomotive&stem=true&symbol=F22G7
 
 Response:
 

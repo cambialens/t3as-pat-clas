@@ -44,6 +44,8 @@
     <!-- works with jersey 2.7 and jackson 2.4.0-rc2 -->
     <jersey.version>2.24</jersey.version>
     <jackson.version>2.8.4</jackson.version> <!-- See: https://jersey.java.net/project-info/2.9/jersey/project/json-jackson/dependencies.html -->
+    <bamboo.buildNumber>XXX</bamboo.buildNumber>
+    <tomcat.port>8888</tomcat.port>
   </properties>
 
   <build>

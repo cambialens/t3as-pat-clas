@@ -7,7 +7,7 @@
   </listener>
 
   <servlet>
-    <servlet-name>jersey-serlvet</servlet-name>
+    <servlet-name>jersey-servlet</servlet-name>
     <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
     <init-param>
       <param-name>jersey.config.server.provider.packages</param-name>
@@ -19,28 +19,22 @@
     <load-on-startup>1</load-on-startup>
   </servlet>
 
-  <!--<servlet>-->
-    <!--<servlet-name>Jersey2Config</servlet-name>-->
-    <!--<servlet-class>io.swagger.jersey.config.JerseyJaxrsConfig</servlet-class>-->
-    <!--<init-param>-->
-      <!--<param-name>api.version</param-name>-->
-      <!--<param-value>v1.0</param-value>-->
-    <!--</init-param>-->
-    <!--<init-param>-->
-      <!--<param-name>swagger.api.basepath</param-name>-->
-      <!--<param-value>http://localhost:8080/pat-clas-service</param-value>-->
-    <!--</init-param>-->
-    <!--<load-on-startup>2</load-on-startup>-->
-  <!--</servlet>-->
-
   <servlet>
     <servlet-name>swagger-bootstrap</servlet-name>
     <servlet-class>org.t3as.patClas.swagger.SwaggerBootstrap</servlet-class>
+    <init-param>
+      <param-name>hostname</param-name>
+      <param-value>${service.host}</param-value>
+    </init-param>
+    <init-param>
+      <param-name>version</param-name>
+      <param-value>${service.version}</param-value>
+    </init-param>
     <load-on-startup>2</load-on-startup>
   </servlet>
-  
+
   <servlet-mapping>
-    <servlet-name>jersey-serlvet</servlet-name>
+    <servlet-name>jersey-servlet</servlet-name>
     <url-pattern>/rest/*</url-pattern>
   </servlet-mapping>
 
@@ -51,7 +45,7 @@
 
   <filter-mapping>
     <filter-name>CORS</filter-name>
-    <servlet-name>jersey-serlvet</servlet-name>
+    <servlet-name>jersey-servlet</servlet-name>
   </filter-mapping>
 
 </web-app>

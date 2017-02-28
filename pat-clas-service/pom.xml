@@ -17,64 +17,54 @@
     <description>Patent Classification RESTful JSON web service</description>
 
     <build>
+        <finalName>patclass</finalName>
         <plugins>
-
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <webResources>
-                        <resource>
-                            <directory>${project.build.outputDirectory}</directory>
-                        </resource>
-                    </webResources>
-                </configuration>
-            </plugin>
-
-            <!-- build and install jar as well as war -->
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.3.2</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>templating-maven-plugin</artifactId>
+                <version>1.0.0</version>
                 <executions>
                     <execution>
-                        <id>make-a-jar</id>
-                        <phase>compile</phase>
+                        <id>filter-src</id>
                         <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>2.3.1</version>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>install-file</goal>
+                            <goal>filter-sources</goal>
                         </goals>
                         <configuration>
-                            <packaging>jar</packaging>
-                            <artifactId>${project.artifactId}</artifactId>
-                            <groupId>${project.groupId}</groupId>
-                            <version>${project.version}</version>
-                            <file>
-                                ${project.build.directory}/${project.artifactId}-${project.version}.jar
-                            </file>
+                            <sourceDirectory>${basedir}/src/main/webapp</sourceDirectory>
+                            <outputDirectory>${project.build.directory}/webapp</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>${project.build.directory}/webapp</directory>
+                        </resource>
+                        <resource>
+                            <directory>${project.build.outputDirectory}</directory>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <version>2.2</version>
+                <configuration>
+                    <server>tomcat</server>
+                    <charset>${project.build.sourceEncoding}</charset>
+                    <warFile>${project.build.directory}/patclass.war</warFile>
+                    <port>${tomcat.port}</port>
+                    <uriEncoding>UTF-8</uriEncoding>
+                    <path>/</path>
+                    <warSourceDirectory>${project.build.directory}/webapp</warSourceDirectory>
+                </configuration>
             </plugin>
         </plugins>
 
@@ -185,7 +175,10 @@
             <id>prod</id>
             <!-- For a production build you must specify this profile: mvn -Pprod -->
             <properties>
-                <data>/ebs/data/patclass</data>
+                <!--<data>/ebs/data/patclass</data>-->
+                <data>${project.basedir}/../data</data>
+                <service.host>patclass.api.lens.org</service.host>
+                <service.version>${project.version} (build ${bamboo.buildNumber})</service.version>
             </properties>
         </profile>
 
@@ -196,6 +189,8 @@
             </activation>
             <properties>
                 <data>${project.basedir}/../data</data>
+                <service.host>localhost:8888</service.host>
+                <service.version>${project.version} (build XXX)</service.version>
             </properties>
         </profile>
     </profiles>

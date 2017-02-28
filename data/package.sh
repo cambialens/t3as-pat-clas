@@ -66,7 +66,7 @@ mkdir -p $dst
 cp -r $src/{ajax-loader.gif,fancytree,index.css,jquery.caret.js,jquery-ui-1.10.4.custom} $dst
 
 # set prod baseUrl
-sed 's~^ *var baseUrl = .*$~  var baseUrl = "/pat-clas-service/rest/v1.0"~' $src/index.html > $dst/index.html
+sed 's~^ *var baseUrl = .*$~  var baseUrl = "/rest/v1.0"~' $src/index.html > $dst/index.html
 
 pushd $dst
 jar cf $n.war ajax-loader.gif  fancytree  index.{css,html} jquery.caret.js jquery-ui-1.10.4.custom

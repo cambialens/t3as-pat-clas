@@ -50,7 +50,7 @@ search indices, you'll need to either set system properties or edit this propert
 
 ## Downloading Data
 
-Run `download.sh` located in data directory, to:
+Run `./data/download.sh` to:
 
  - download classification source data;
  - create an empty US DTD file; and
@@ -101,7 +101,7 @@ In `pat-clas-service` use:
 
 		mvn tomcat7:run
 		
-to build and deploy the webapp on tomcat on port 8080. Use Ctrl-C to stop tomcat.
+to build and deploy the webapp on tomcat on port 8888. Use Ctrl-C to stop tomcat.
 
 To run outside of Maven, copy the target/*.war file to tomcat's webapps dir or otherwise install the war file in the
 Servlet 3.0 compliant app-server of your choice. 

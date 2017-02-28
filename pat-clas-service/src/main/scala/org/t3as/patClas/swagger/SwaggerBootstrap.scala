@@ -10,10 +10,11 @@ class SwaggerBootstrap extends HttpServlet {
   override def init(config: ServletConfig) = {
     super.init(config)
     val beanConfig = new BeanConfig()
-    beanConfig.setVersion("1.0")
-    beanConfig.setSchemes(Array("http"))
-    beanConfig.setHost("localhost:8080")
-    beanConfig.setBasePath("/pat-clas-service/rest")
+    beanConfig.setTitle("Patent Classification API")
+    beanConfig.setVersion(config.getInitParameter("version"))
+    beanConfig.setSchemes(Array("http", "https"))
+    beanConfig.setHost(config.getInitParameter("host"))
+    beanConfig.setBasePath("rest")
     beanConfig.setResourcePackage("io.swagger.resource,org.t3as.patClas.service")
     beanConfig.setScan(true)
   }

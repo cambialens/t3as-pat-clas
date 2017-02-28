@@ -30,12 +30,12 @@ import javax.ws.rs.core.MediaType
 import scala.collection.mutable
 import scala.collection.mutable.MutableList
 
-// path = "http://localhost:8080/pat-clas-service/rest/v1.0"
+// path = "http://localhost:8888/rest/v1.0"
 class PatClasClient(path: String) extends Factory {
   val log = LoggerFactory.getLogger(getClass)
   val config = (new ClientConfig(classOf[ScalaJacksonJsonProvider])).getConfiguration
 
-  // path = "http://localhost:8080/pat-clas-service/rest/v1.0/CPC"
+  // path = "http://localhost:8888/rest/v1.0/CPC"
   class Client[H <: HitBase, D](path: String) extends SearchService[H] with LookupService[D] {
     val c = ClientBuilder.newClient(config).target(path)
 

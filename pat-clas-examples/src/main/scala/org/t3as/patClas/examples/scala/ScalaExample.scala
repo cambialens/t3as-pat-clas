@@ -17,7 +17,7 @@ object ScalaExample {
       doit(local)
     
     // client that makes HTTP requests to remote (inter-process) service (which has to be running elsewhere)
-    for (remote <- managed(new PatClasClient("http://localhost:8080/pat-clas-service/rest/v1.0")))
+    for (remote <- managed(new PatClasClient("http://localhost:8888/rest/v1.0")))
       doit(remote)
   }
 

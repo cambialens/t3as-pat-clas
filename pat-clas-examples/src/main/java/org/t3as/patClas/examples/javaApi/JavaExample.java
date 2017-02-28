@@ -44,7 +44,7 @@ public class JavaExample {
 
         // client that makes HTTP requests to remote (inter-process) service
         // (which has to be running elsewhere)
-        Factory remote = PatClasClient$.MODULE$.toJavaApi("http://localhost:8080/pat-clas-service/rest/v1.0");
+        Factory remote = PatClasClient$.MODULE$.toJavaApi("http://localhost:8888/rest/v1.0");
         try {
             doit(remote);
         } finally {
