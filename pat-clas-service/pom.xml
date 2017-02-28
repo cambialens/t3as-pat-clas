@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.t3as</groupId>
         <artifactId>pat-clas</artifactId>
-        <version>1.0.6-SNAPSHOT</version>
+        <version>1.1.0</version>
     </parent>
 
     <artifactId>pat-clas-service</artifactId>
