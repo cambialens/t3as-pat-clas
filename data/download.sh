@@ -17,7 +17,7 @@ done <<'EoF'
 http://www.cooperativepatentclassification.org/cpc/interleaved/CPCSchemeXML201611.zip
 http://www.wipo.int/ipc/itos4ipc/ITSupport_and_download_area/20140101/MasterFiles/ipcr_scheme_20140101.zip
 http://www.wipo.int/ipc/itos4ipc/ITSupport_and_download_area/Documentation/20140101/ipcr_scheme_1-02.dtd
-https://bulkdata.uspto.gov/data2/patent/classification/classdefs.zip
+http://patents.reedtech.com/downloads/PatentClassInfo/ClassData/classdefs.zip
 EoF
 
 # The USPC zip file contains a DTD "classdef.dtd" but it is not a valid XML DTD (presumably SGML?)
@@ -29,11 +29,11 @@ touch xclassdef.dtd
 # This reproduces a manual edit to produce a fixed version classdefs-patched.zip
 if [[ ! -f classdefs-patched.zip ]] ; then
     echo "Patching US data..."
-    unzip classdefs.zip classdefs201410/class_560.xml
-    patch classdefs201410/class_560.xml class_560.xml.diff
+    unzip classdefs.zip classdefs201502/class_560.xml
+    patch classdefs201502/class_560.xml class_560.xml.diff
     cp classdefs.zip classdefs-patched.zip
-    zip -f classdefs-patched.zip classdefs201410/class_560.xml
-    rm -rf classdefs201410/
+    zip -f classdefs-patched.zip classdefs201502/class_560.xml
+    rm -rf classdefs201502/
 else
     echo "US data already patched"
     echo
