@@ -11,7 +11,7 @@ Still TODO: Complete Auto-Generated Swagger Documentation
  
 * Swagger Annotations documentation https://github.com/swagger-api/swagger-core/wiki/Annotations-1.5.X
 * Swagger service endpoint is installed at  http://localhost:8888:rest/swagger-ui.json
-* Swagger UI is already installed under pat-clas-service/src/main/webapp, access at http://localhost:8888/patclass
+* Swagger UI is already installed under pat-clas-service/src/main/webapp, access at http://localhost:8888/patclass (NOTE: This currently overrides the installation of the original UI in pat-clas-ui)
   
 
 ## Getting Data for classification symbols
