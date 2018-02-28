@@ -4,14 +4,14 @@ The Patent Classification API provides endpoints to search and retrieve classifi
  
 An explanation of the CPC classification scheme can be found at Wikipedia: https://en.wikipedia.org/wiki/Cooperative_Patent_Classification
 
-A Postman collection for the API can be found [here](src/test/postman/). The environment variable `url` should be defined and set to http://patclass.api.lens.org.
+A Postman collection for the API can be found [here](src/test/postman/). The environment variable `url` should be defined and set to http://patclass.api.lens.org or http://localhost:8888 for local development.
 
 
 Still TODO: Complete Auto-Generated Swagger Documentation
  
 * Swagger Annotations documentation https://github.com/swagger-api/swagger-core/wiki/Annotations-1.5.X
-* Swagger service endpoint is installed at  http://localhost:8888:rest/swagger-ui.json
-* Swagger UI is already installed under pat-clas-service/src/main/webapp, access at http://localhost:8888/patclass (NOTE: This currently overrides the installation of the original UI in pat-clas-ui)
+* Swagger service endpoint is installed at  http://localhost:8888:/rest/swagger.json
+* Swagger UI is already installed under pat-clas-service/src/main/webapp, access at http://localhost:8888 (NOTE: This currently overrides the installation of the original UI in pat-clas-ui)
   
 
 ## Getting Data for classification symbols
