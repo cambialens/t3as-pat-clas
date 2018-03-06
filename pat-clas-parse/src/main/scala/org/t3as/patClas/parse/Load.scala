@@ -52,8 +52,8 @@ object Load {
   val log = LoggerFactory.getLogger(getClass)
 
   case class Config(
-    cpcZipFile: File = new File("CPCSchemeXML201611.zip"),
-    ipcZipFile: File = new File("ipcr_scheme_20140101.zip"),
+    cpcZipFile: File = new File("CPCSchemeXML201802.zip"),
+    ipcZipFile: File = new File("ipc_scheme_20180101.zip"),
     uspcZipFile: File = new File("classdefs-patched.zip"),
     dburl: String = "jdbc:h2:file:./patClasDb",
     jdbcDriver: String = "org.h2.Driver",
@@ -202,8 +202,10 @@ object Load {
         for(zipFile <- managed(new ZipFile(c.ipcZipFile))) {
           zipFile.entries foreach { e =>
             // parent for English IPCEntries (skipping French for now)
-            val parent = (XML.load(zipFile.getInputStream(e)) \ "revisionPeriod" \ "ipcEdition" \ "en" \ "staticIpc")(0)
-            IPCParser.parse(parent) foreach (process(_, IPCdb.topLevel))
+            if (e.getName.startsWith("EN_")) {
+              val parent = (XML.load(zipFile.getInputStream(e)))(0)
+              IPCParser.parse(parent) foreach (process(_, IPCdb.topLevel))
+            }
           }
         }
       }

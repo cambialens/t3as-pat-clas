@@ -14,9 +14,8 @@ do
     echo "Downloading $url..."
     wget --no-clobber $url
 done <<'EoF'
-http://www.cooperativepatentclassification.org/cpc/interleaved/CPCSchemeXML201611.zip
-http://www.wipo.int/ipc/itos4ipc/ITSupport_and_download_area/20140101/MasterFiles/ipcr_scheme_20140101.zip
-http://www.wipo.int/ipc/itos4ipc/ITSupport_and_download_area/Documentation/20140101/ipcr_scheme_1-02.dtd
+http://www.cooperativepatentclassification.org/cpc/interleaved/CPCSchemeXML201802.zip
+http://www.wipo.int/ipc/itos4ipc/ITSupport_and_download_area/20180101/MasterFiles/ipc_scheme_20180101.zip
 http://patents.reedtech.com/downloads/PatentClassInfo/ClassData/classdefs.zip
 EoF
 
