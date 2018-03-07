@@ -207,6 +207,60 @@ class TestIPCParser extends FlatSpec with Matchers {
                            </title>
                          </textBody>
                        </ipcEntry>
+                       <ipcEntry kind="m" symbol="A01B0003000000" edition="19680901,20060101" entryType="K">
+                         <textBody>
+                           <title>
+                             <titlePart>
+                               <text>Ploughs with fixed plough-shares</text>
+                             </titlePart>
+                           </title>
+                         </textBody>
+                         <ipcEntry kind="1" symbol="A01B0003360000" edition="19680901,20060101" entryType="K">
+                           <textBody>
+                             <title>
+                               <titlePart>
+                                 <text>Ploughs mounted on tractors</text>
+                               </titlePart>
+                             </title>
+                           </textBody>
+                           <ipcEntry kind="2" symbol="A01B0003400000" edition="19680901,20060101" entryType="K">
+                             <textBody>
+                               <title>
+                                 <titlePart>
+                                   <text>Alternating ploughs</text>
+                                 </titlePart>
+                               </title>
+                             </textBody>
+                             <ipcEntry kind="3" symbol="A01B0003420000" edition="19680901,20060101" entryType="K">
+                               <textBody>
+                                 <title>
+                                   <titlePart>
+                                     <text>Turn-wrest ploughs</text>
+                                   </titlePart>
+                                 </title>
+                               </textBody>
+                               <ipcEntry kind="4" symbol="A01B0003421000" edition="19740701,20060101" entryType="K">
+                                 <textBody>
+                                   <title>
+                                     <titlePart>
+                                       <text>with a headstock frame made in one piece</text>
+                                     </titlePart>
+                                   </title>
+                                 </textBody>
+                               </ipcEntry>
+                               <ipcEntry kind="4" symbol="A01B0003426000" edition="19740701,20060101" entryType="K">
+                                 <textBody>
+                                   <title>
+                                     <titlePart>
+                                       <text>with a headstock frame made of two or more parts</text>
+                                     </titlePart>
+                                   </title>
+                                 </textBody>
+                               </ipcEntry>
+                             </ipcEntry>
+                           </ipcEntry>
+                         </ipcEntry>
+                       </ipcEntry>
                      </ipcEntry>
                    </ipcEntry>
                  </ipcEntry>
@@ -230,7 +284,7 @@ class TestIPCParser extends FlatSpec with Matchers {
     val n2 = n1.children(0)
     n2.value.ipcEntry.symbol should be("A01B")
     n2.value.ipcEntry.kind should be("u")
-    n2.children.size should be(2)
+    n2.children.size should be(3)
     
     val n3 = n2.children(0)
     n3.value.ipcEntry.symbol should be("A01B")
@@ -238,9 +292,17 @@ class TestIPCParser extends FlatSpec with Matchers {
     n3.children.size should be(0)
     
     val n4 = n2.children(1)
-    n4.value.ipcEntry.symbol should be("A01B0001000000")
+    n4.value.ipcEntry.symbol should be("A01B1/00")
     n4.value.ipcEntry.kind should be("m")
-    n4.children.size should be(0)    
+    n4.children.size should be(0)
+
+    n2.children(2).value.ipcEntry.symbol should be("A01B3/00")
+    n2.children(2).children.size should be(1)
+    n2.children(2).children(0).value.ipcEntry.symbol should be ("A01B3/36")
+    n2.children(2).children(0).children(0).value.ipcEntry.symbol should be ("A01B3/40")
+    n2.children(2).children(0).children(0).children(0).value.ipcEntry.symbol should be ("A01B3/42")
+    n2.children(2).children(0).children(0).children(0).children(0).value.ipcEntry.symbol should be ("A01B3/421")
+    n2.children(2).children(0).children(0).children(0).children(1).value.ipcEntry.symbol should be ("A01B3/426")
   }
 
 }

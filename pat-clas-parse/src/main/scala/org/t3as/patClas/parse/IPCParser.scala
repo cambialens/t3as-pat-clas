@@ -43,6 +43,18 @@ object IPCParser {
   def ipcNode(n: Node, level: Int, hText: String) = {
     def attrOption(n: Node, name: String) = n.attribute(name).map(_(0).text)
     def attr(n: Node, name: String) = attrOption(n, name).getOrElse(throw new Exception("ipcEntry missing @" + name))
+    def parseSymbol(symbol: String) = {
+      val subclass = symbol.substring(0, 4)
+      val mainGroupNumber = symbol.substring(4, 8).toInt.toString
+      val subgroupNumber = symbol.substring(8, 10) + symbol.substring(10).reverse.dropWhile(_ == '0').reverse
+
+      subclass + mainGroupNumber + "/" + subgroupNumber
+    }
+    def symbolAttr(n: Node) = {
+      val symbol = attr(n, "symbol")
+
+      if (symbol.length == 14) parseSymbol(symbol) else symbol
+    }
 
     // preserve XML elements (contains presentation elements e.g. <emdash/> and marked up refs to other classification codes) 
     val textBody = n \ "textBody" toString
@@ -50,7 +62,7 @@ object IPCParser {
     IPCNode(IPCEntry(None, 0, level,
       // attr(n, "entryType"), always K, so omit
       attr(n, "kind"),
-      attr(n, "symbol"),
+      symbolAttr(n),
       attrOption(n, "endSymbol"),
       textBody
       ),
