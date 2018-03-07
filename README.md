@@ -80,9 +80,6 @@ From the data directory, run the parser to create the database and search indice
 Notes:
 
  - To omit CPC processing provide a non-existent path for the CPC zip file, e.g. `--cpcZipFile none` and likewise for IPC and USPC.
- - (*) XML in `ipcr_scheme_20130101.zip` refers to its DTD with `<!DOCTYPE revisionPeriods SYSTEM "ipcr_scheme_1-02.dtd">`
-   so IPC processing requires this file in the current working directory. We could add an entity resolver to pick this
-   up from a jar file class path entry, but I don't think its worth doing.
  - (*) XML in `classdefs.zip` refers to its DTD with `<!DOCTYPE class PUBLIC "-//USPTO//DTD Classification Definitions//EN" "xclassdef.dtd">`
    so USPC processing requires this file in the current working directory. As the provided DTD is not valid, just create an empty file with this name.
    At some stage we may want to create a valid DTD containing at least the entity definitions from the invalid provided DTD.
