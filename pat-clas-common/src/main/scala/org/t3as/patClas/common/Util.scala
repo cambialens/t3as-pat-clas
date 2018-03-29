@@ -24,9 +24,8 @@ import java.util.Properties
 import scala.collection.JavaConversions.propertiesAsScalaMap
 import scala.language.implicitConversions
 import scala.xml.{Utility, XML}
-
 import org.slf4j.LoggerFactory
-import org.t3as.patClas.api.{CPCDescription, CPCHit, HitSymbol, IPCDescription, IPCHit, USPCDescription, USPCHit}
+import org.t3as.patClas.api._
 
 object Util {
   val log = LoggerFactory.getLogger(getClass)
@@ -117,8 +116,10 @@ object CPCUtil {
   case class ClassificationItem(id: Option[Int], parentId: Int, breakdownCode: Boolean, allocatable: Boolean, additionalOnly: Boolean,
     dateRevised: String, level: Int, symbol: String, classTitle: String, notesAndWarnings: String) {
 
-    def toDescription(text: String => String) = CPCDescription(id.get, symbol, level, text(classTitle), text(notesAndWarnings))
-  }  
+    def toDescription(text: String => String) = CPCDescriptionBasic(id.get, symbol, level, text(classTitle), text(notesAndWarnings))
+    def toDescription(text: String => String, childCount: Int) =
+      CPCDescriptionWithChildCount(id.get, symbol, level, text(classTitle), text(notesAndWarnings), childCount)
+  }
 }
 
 object IPCUtil {
@@ -160,10 +161,12 @@ object IPCUtil {
         getH(TextBody, TextBodyUnstemmed)
       )
   }
-  
+
   /** Entity class mapping to a database row representing a IPCEntry */
   case class IPCEntry(id: Option[Int], parentId: Int, level: Int, kind: String, symbol: String, endSymbol: Option[String], textBody: String) {
-    def toDescription(text: String => String) = IPCDescription(id.get, symbol, level, kind, text(textBody))
+    def toDescription(text: String => String) = IPCDescriptionBasic(id.get, symbol, level, kind, text(textBody))
+    def toDescription(text: String => String, childCount: Int) =
+      IPCDescriptionWithChildCount(id.get, symbol, level, kind, text(textBody), childCount)
   }
 
   private val re = """(\p{Upper}\p{Digit}{2}\p{Upper})(\p{Digit}{4})(\p{Digit}{6})""".r
@@ -242,6 +245,9 @@ object USPCUtil {
   /** Entity class mapping to a database row representing a USPC Symbol.
     */
   case class UsClass(id: Option[Int], xmlId: String, parentXmlId: String, symbol: String, classTitle: Option[String], subClassTitle: Option[String], subClassDescription: Option[String], text: String) {
-    def toDescription(f: String => String) = USPCDescription(id.get, symbol, classTitle.getOrElse(""), subClassTitle.map(f).getOrElse(""), subClassDescription.map(f).getOrElse(""), f(text))
-  } 
+    def toDescription(f: String => String) = USPCDescriptionBasic(id.get, symbol, classTitle.getOrElse(""), subClassTitle.map(f).getOrElse(""), subClassDescription.map(f).getOrElse(""), f(text))
+    def toDescription(f: String => String, childCount: Int) =
+      USPCDescriptionWithChildCount(id.get, symbol, classTitle.getOrElse(""), subClassTitle.map(f).getOrElse(""),
+        subClassDescription.map(f).getOrElse(""), f(text), childCount)
+  }
 }

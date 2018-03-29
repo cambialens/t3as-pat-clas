@@ -73,6 +73,15 @@ class USPCdb(val profile: JdbcProfile) {
       Compiled(q _)
     }
 
+    var getChildren = {
+      def q(id: Column[Int]) =
+        uspcs.filter(_.id === id)
+          .flatMap(p => uspcs.filter(c => c.parentXmlId === p.xmlId && c.id =!= p.id))
+          .sortBy(_.symbol)
+          .map(c => (c, uspcs.filter(_.parentXmlId === c.xmlId).length))
+      Compiled(q _)
+    }
+
     val insert = (uspcs returning uspcs.map(_.id)).insertInvoker
   }
 
@@ -86,6 +95,10 @@ class USPCdb(val profile: JdbcProfile) {
    */
   def getChildren(parentId: Int)(implicit session: Session) = {
     compiled.getById(parentId).list.flatMap(p => compiled.getByParentXmlId(p.xmlId).list.filter(_.xmlId != p.xmlId).sortBy(_.symbol))
+  }
+
+  def getChildrenWithGrandchildCounts(parentId: Int)(implicit session: Session) = {
+    compiled.getChildren(parentId).list
   }
 
   /** Prepend ancestors of c to acc and return acc.

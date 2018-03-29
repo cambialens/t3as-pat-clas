@@ -225,10 +225,12 @@ class CPCService extends SearchService[CPCHit] with LookupService[CPCDescription
   @Path("children")
   @GET
   @Produces(Array(MediaType.APPLICATION_JSON))
-  override def children(@QueryParam("parentId") parentId: Int, @QueryParam("format") format: String) = {
+  override def children(@QueryParam("parentId") parentId: Int, @QueryParam("format") format: String,
+                        @QueryParam("grandchildCounts") grandchildCounts: Boolean) = {
     val fmt = getToText(format)
     database withSession { implicit session =>
-      cpcDb.getChildren(parentId).map(_.toDescription(fmt))
+      if (grandchildCounts) cpcDb.getChildrenWithGrandchildCounts(parentId).map(c => c._1.toDescription(fmt, c._2))
+      else cpcDb.getChildren(parentId).map(_.toDescription(fmt))
     }
   }
 }
@@ -281,10 +283,12 @@ class IPCService extends SearchService[IPCHit] with LookupService[IPCDescription
   @Path("children")
   @GET
   @Produces(Array(MediaType.APPLICATION_JSON))
-  override def children(@QueryParam("parentId") parentId: Int, @QueryParam("format") format: String) = {
+  override def children(@QueryParam("parentId") parentId: Int, @QueryParam("format") format: String,
+                        @QueryParam("grandchildCounts") grandchildCounts: Boolean) = {
     val fmt = getToText(format)
     database withSession { implicit session =>
-      ipcDb.getChildren(parentId).map(_.toDescription(fmt))
+      if (grandchildCounts) ipcDb.getChildrenWithGrandchildCounts(parentId).map(c => c._1.toDescription(fmt, c._2))
+      else ipcDb.getChildren(parentId).map(_.toDescription(fmt))
     }
   }
 }
@@ -337,10 +341,12 @@ class USPCService extends SearchService[USPCHit] with LookupService[USPCDescript
   @Path("children")
   @GET
   @Produces(Array(MediaType.APPLICATION_JSON))
-  override def children(@QueryParam("parentId") parentId: Int, @QueryParam("format") format: String) = {
+  override def children(@QueryParam("parentId") parentId: Int, @QueryParam("format") format: String,
+                        @QueryParam("grandchildCounts") grandchildCounts: Boolean) = {
     val fmt = getToText(format)
     database withSession { implicit session =>
-      uspcDb.getChildren(parentId).map(_.toDescription(fmt))
+      if (grandchildCounts) uspcDb.getChildrenWithGrandchildCounts(parentId).map(c => c._1.toDescription(fmt, c._2))
+      else uspcDb.getChildren(parentId).map(_.toDescription(fmt))
     }
   }
 }

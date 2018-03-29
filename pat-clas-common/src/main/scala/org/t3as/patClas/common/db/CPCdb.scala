@@ -64,35 +64,44 @@ class CPCdb(val profile: JdbcProfile) {
       Compiled(q _)
     }
 
+    val getByParentIdWithChildCounts = {
+      def q(parentId: Column[Int]) = {
+        cpcs.filter(c => c.parentId === parentId && c.id =!= parentId)
+          .sortBy(_.symbol)
+          .map(child => (child, cpcs.filter(_.parentId === child.id).length))
+      }
+      Compiled(q _)
+    }
+
     val getBySymbol = {
       def q(symbol: Column[String]) = cpcs.filter(_.symbol === symbol)
       Compiled(q _)
     }
-    
+
     val getBySymbolLevel = {
       def q(symbol: Column[String], level: Column[Int])= cpcs.filter(c => c.symbol === symbol && c.level === level)
       Compiled(q _)
     }
-    
+
     val insert = (cpcs returning cpcs.map(_.id)).insertInvoker
   }
 
   def insertTree(n: TreeNode[ClassificationItem], parentId: Int)(implicit session: Session): Unit = {
-    
+
     // Dupe logic with indexing, maybe move into parse/post parse somehow
     // Remove level 3 and 6 as they break the tree structure and [seem to] serve no purpose to us.
-    // 
+    //
     // In the XML at level 3/4 (and 6/7) the following occurs
-    // <classification-item ... level="2" ... sort-key="B" ... > 
-    // <classification-item ... level="3" ... sort-key="B01" ... > 
+    // <classification-item ... level="2" ... sort-key="B" ... >
+    // <classification-item ... level="3" ... sort-key="B01" ... >
     // <classification-item ... level="4" ... sort-key="B01" ... > -- Nested under itself (B01 at level 3)
     // <classification-item ... level="4" ... sort-key="B02" ... > -- Nested under it's sibling (B01 at level 3)
-    // 
-    // level 2 B                                             level 2 B         
-    // level 3 +- B01      -> remove extra level (3/6) ->    level 3 |   
+    //
+    // level 2 B                                             level 2 B
+    // level 3 +- B01      -> remove extra level (3/6) ->    level 3 |
     // level 4     +- B01                                    level 4 +- B01
     // level 4     +- B02                                    level 4 +- B02
-    
+
     if (n.value.level != 3 && n.value.level != 6) {
       val id = compiled.insert += n.value.copy(parentId = parentId)
       n.children foreach { n => insertTree(n, id) }
@@ -120,6 +129,10 @@ class CPCdb(val profile: JdbcProfile) {
    */
   def getChildren(parentId: Int)(implicit session: Session) = {
     compiled.getByParentId(parentId).list.filter(_.id.getOrElse(parentId) != parentId).sortBy(_.symbol)
+  }
+
+  def getChildrenWithGrandchildCounts(parentId: Int)(implicit session: Session) = {
+    compiled.getByParentIdWithChildCounts(parentId).list
   }
 
   /** Prepend ancestors of c to acc and return acc. */

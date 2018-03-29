@@ -36,8 +36,8 @@ class TestAPI extends FlatSpec with Matchers {
 
   "javaApi adapters" should "convert to java.util.List" in {
 
-    val cpcDescr1 = CPCDescription(1, "symbol1", 1, "classTitle", "notesAndWarnings")    
-    val cpcDescr2 = CPCDescription(2, "symbol2", 2, "classTitle", "notesAndWarnings")    
+    val cpcDescr1 = CPCDescriptionBasic(1, "symbol1", 1, "classTitle", "notesAndWarnings")
+    val cpcDescr2 = CPCDescriptionBasic(2, "symbol2", 2, "classTitle", "notesAndWarnings")
     val cpcHit = CPCHit(0.5f, HitSymbol("A01B1234654321", "A01B12/65"), 3, "classTitle", "notesAndWarnings")
     val cpcSugExact = List("locos", "locomotive", "locomotives")
     val cpcSugFuzzy = List("fuzzy1", "fuzzy2")
@@ -48,7 +48,7 @@ class TestAPI extends FlatSpec with Matchers {
         def ancestorsAndSelf(symbol: String, format: String) = List(cpcDescr1)
         def bulkAncestorsAndSelf(bulkSymbolLookup: BulkSymbolLookup): Map[String, List[CPCDescription]] = 
           Map(bulkSymbolLookup.symbols.head -> List(cpcDescr1)) 
-        def children(parentId: Int, format: String) = List(cpcDescr2)
+        def children(parentId: Int, format: String, subgroupCounts: Boolean = false) = List(cpcDescr2)
         def search(q: String, stem: Boolean, symbol: String) = List(cpcHit) 
         def suggest(prefix: String, num: Int) = Suggestions(cpcSugExact, cpcSugFuzzy)
       }
@@ -56,7 +56,7 @@ class TestAPI extends FlatSpec with Matchers {
       val ipc = new SearchService[IPCHit] with LookupService[IPCDescription] {
         def ancestorsAndSelf(symbol: String, format: String): List[IPCDescription] = ???
         def bulkAncestorsAndSelf(bulkSymbolLookup: BulkSymbolLookup): Map[String, List[IPCDescription]] = ???
-        def children(parentId: Int, format: String): List[IPCDescription] = ???
+        def children(parentId: Int, format: String, subgroupCounts: Boolean = false): List[IPCDescription] = ???
         def search(q: String, stem: Boolean, symbol: String): List[IPCHit] = ??? 
         def suggest(prefix: String, num: Int): Suggestions = ???
       }
@@ -64,7 +64,7 @@ class TestAPI extends FlatSpec with Matchers {
       val uspc = new SearchService[USPCHit] with LookupService[USPCDescription] {
         def ancestorsAndSelf(symbol: String, format: String): List[USPCDescription] = ???
         def bulkAncestorsAndSelf(bulkSymbolLookup: BulkSymbolLookup): Map[String, List[USPCDescription]] = ???
-        def children(parentId: Int, format: String): List[USPCDescription] = ???
+        def children(parentId: Int, format: String, subgroupCounts: Boolean = false): List[USPCDescription] = ???
         def search(q: String, stem: Boolean, symbol: String): List[USPCHit] = ??? 
         def suggest(prefix: String, num: Int): Suggestions = ???
       }

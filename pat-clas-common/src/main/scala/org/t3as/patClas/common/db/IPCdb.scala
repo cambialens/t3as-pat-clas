@@ -65,6 +65,15 @@ class IPCdb(val profile: JdbcProfile) {
       Compiled(q _)
     }
 
+    val getByParentIdWithChildCounts = {
+      def q(parentId: Column[Int]) = {
+        ipcs.filter(c => c.parentId === parentId && c.id =!= parentId)
+          .sortBy(_.symbol)
+          .map(child => (child, ipcs.filter(_.parentId === child.id).length))
+      }
+      Compiled(q _)
+    }
+
     val getBySymbol = {
       def q(symbol: Column[String]) = ipcs.filter(_.symbol === symbol)
       Compiled(q _)
@@ -106,6 +115,10 @@ class IPCdb(val profile: JdbcProfile) {
    */
   def getChildren(parentId: Int)(implicit session: Session) = {
     compiled.getByParentId(parentId).list.filter(_.id.getOrElse(parentId) != parentId).sortBy(_.symbol)
+  }
+
+  def getChildrenWithGrandchildCounts(parentId: Int)(implicit session: Session) = {
+    compiled.getByParentIdWithChildCounts(parentId).list
   }
 
   /** Prepend ancestors of c to acc and return acc.

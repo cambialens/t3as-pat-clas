@@ -60,7 +60,7 @@ class PatClasClient(path: String) extends Factory {
     // FIX BW 16/11/2016 Implement
     override def bulkAncestorsAndSelf(bulkSymbolLookup: BulkSymbolLookup): Map[String, List[D]] = ???
 
-    override def children(parentId: Int, format: String) = c.path("children")
+    override def children(parentId: Int, format: String, grandchildCounts: Boolean = false) = c.path("children")
       .queryParam("parentId", parentId.toString)
       .queryParam("format", format)
       .request(MediaType.APPLICATION_JSON_TYPE)
