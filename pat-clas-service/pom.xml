@@ -16,6 +16,13 @@
     <name>Patent Classification Service</name>
     <description>Patent Classification RESTful JSON web service</description>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>alfresco-public</id>
+            <url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <build>
         <finalName>patclass</finalName>
         <plugins>
@@ -95,8 +102,8 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.2</version>
+                <artifactId>tomcat8-maven-plugin</artifactId>
+                <version>3.0-r1756463</version>
                 <configuration>
                     <server>tomcat</server>
                     <charset>${project.build.sourceEncoding}</charset>

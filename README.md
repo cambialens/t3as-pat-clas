@@ -96,7 +96,7 @@ have the database open at a time, so stop this server (with Ctrl-C) before start
 
 In `pat-clas-service` use:
 
-		mvn tomcat7:run
+		mvn tomcat8:run
 		
 to build and deploy the webapp on tomcat on port 8888. Use Ctrl-C to stop tomcat.
 
