@@ -14,29 +14,30 @@ do
     echo "Downloading $url..."
     wget --no-clobber $url
 done <<'EoF'
-http://www.cooperativepatentclassification.org/cpc/bulk/CPCSchemeXML202001.zip
-http://www.wipo.int/ipc/itos4ipc/ITSupport_and_download_area/20200101/MasterFiles/ipc_scheme_20200101.zip
-http://patents.reedtech.com/downloads/PatentClassInfo/ClassData/classdefs.zip
+http://www.cooperativepatentclassification.org/cpc/bulk/CPCSchemeXML202102.zip
+http://www.wipo.int/ipc/itos4ipc/ITSupport_and_download_area/20210101/MasterFiles/ipc_scheme_20210101.zip
 EoF
+# Couldn't find this but it shouldn't change now that CPC is being used
+#http://patents.reedtech.com/downloads/PatentClassInfo/ClassData/classdefs.zip
 
 # The USPC zip file contains a DTD "classdef.dtd" but it is not a valid XML DTD (presumably SGML?)
 # The USPC data refers to a DTD "xclassdef.dtd", so this file must exist.
 # Until we convert the DTD to a valid XML DTD, we use an empty file.
-touch xclassdef.dtd
+#touch xclassdef.dtd
 
 # The USPC zip file contains a corrupted entry for class 560.
 # This reproduces a manual edit to produce a fixed version classdefs-patched.zip
-if [[ ! -f classdefs-patched.zip ]] ; then
-    echo "Patching US data..."
-    unzip classdefs.zip classdefs201502/class_560.xml
-    patch classdefs201502/class_560.xml class_560.xml.diff
-    cp classdefs.zip classdefs-patched.zip
-    zip -f classdefs-patched.zip classdefs201502/class_560.xml
-    rm -rf classdefs201502/
-else
-    echo "US data already patched"
-    echo
-fi
+#if [[ ! -f classdefs-patched.zip ]] ; then
+#    echo "Patching US data..."
+#    unzip classdefs.zip classdefs201502/class_560.xml
+#    patch classdefs201502/class_560.xml class_560.xml.diff
+#    cp classdefs.zip classdefs-patched.zip
+#    zip -f classdefs-patched.zip classdefs201502/class_560.xml
+#    rm -rf classdefs201502/
+#else
+#    echo "US data already patched"
+#    echo
+#fi
 
 if [[ ! -f jquery.fancytree-2.0.0-4.zip ]] ; then
     echo "Download and install jquery-ui-fancytree into pat-clas-ui"
