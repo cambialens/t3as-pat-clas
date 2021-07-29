@@ -52,7 +52,7 @@ object Load {
   val log = LoggerFactory.getLogger(getClass)
 
   case class Config(
-    cpcZipFile: File = new File("CPCSchemeXML202102.zip"),
+    cpcZipFile: File = new File("CPCSchemeXML202105.zip"),
     ipcZipFile: File = new File("ipc_scheme_20210101.zip"),
     uspcZipFile: File = new File("classdefs-patched.zip"),
     dburl: String = "jdbc:h2:file:./patClasDb",
