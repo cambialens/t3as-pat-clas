@@ -108,7 +108,9 @@ class USPCdb(val profile: JdbcProfile) {
     if (log.isDebugEnabled()) log.debug(s"ancestors: c = $c")
     if (c.parentXmlId == USPCdb.topXmlId) acc
     else {
-      val pOpt = compiled.getByXmlId(c.parentXmlId).firstOption
+      // Assume parent is top class when parent XML ID is the same as subclass ID
+      val parentXmlId = if (c.parentXmlId == c.xmlId) s"${c.parentXmlId.slice(0, 5)}000000" else c.parentXmlId
+      val pOpt = compiled.getByXmlId(parentXmlId).firstOption
       // TODO: US data is dirty - many parent's don't exist - most of these have a missing digit
       // e.g. C106S00150, if a '0' is inserted before the 2nd to last char it might correct many
       // but for now we just don't look any higher
