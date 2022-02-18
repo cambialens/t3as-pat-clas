@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Usage example: /parse.sh -c CPCSchemeXML202202.zip -i ipc_scheme_20220101.zip
+
 set -e
 
 script_dir=$(cd "$(dirname "$0")"; pwd)
@@ -13,6 +15,6 @@ fi
 
 echo "Parsing CPC, IPC and USPC patent classification data..."
 echo
-java -jar $parser
+java -jar $parser $@
 echo
 echo "Done."
