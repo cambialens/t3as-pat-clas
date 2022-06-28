@@ -10,20 +10,19 @@ fi
 bin_dir=$(cd "$(dirname "$0")"; pwd)
 source "$bin_dir"/_common.sh 
 
-echo sudo service tomcat8 stop
+sudo service tomcat8 stop
 
 backup_dir="$DEPLOYED_DATA_DIR-backup-$(date +'%Y-%m-%d-%H%M%S')"
 echo "Backing up current databases to $backup_dir"
-echo cp -r "$DEPLOYED_DATA_DIR" "$backup_dir"
-
+mv "$DEPLOYED_DATA_DIR" "$backup_dir"
+mkdir "$DEPLOYED_DATA_DIR"
 echo "Deploying new databases to prod..."
 for file in cpcIndex cpcIndexExactSug cpcIndexFuzzySug \
 	ipcIndex ipcIndexExactSug ipcIndexFuzzySug \
 	uspcIndex uspcIndexExactSug uspcIndexFuzzySug \
 	patClasDb.h2.db; do
-    echo rm -rf "$DEPLOYED_DATA_DIR/$file"
-    echo cp -r "$DATA_DIR/$file" "$DEPLOYED_DATA_DIR/"
+    cp -r "$DATA_DIR/$file" "$DEPLOYED_DATA_DIR/"
 done
 
-echo sudo service tomcat8 start
+sudo service tomcat8 start
 sudo tail -f /var/log/tomcat8/catalina.out
