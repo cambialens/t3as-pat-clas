@@ -1,0 +1,14 @@
+# edit cpc/ipc versions to download
+vi download.sh
+
+# cleanup downloads and generateed files from last time
+../cleanup.sh
+
+# run the downloads to the ../data dir
+./download.sh
+
+# parse the files
+./parse.sh -i ipc_scheme_XXXXXXXX.zip -c CPCSchemeXMXXXXXX.zip -u classdefs-patched.zip
+
+# deploy to prod (a data backup is made)
+sudo ../bin/deploy.sh

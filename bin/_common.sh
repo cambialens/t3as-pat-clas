@@ -3,6 +3,6 @@
 
 BASE_DIR=$(cd "$(dirname "$0")"/../; pwd)
 DATA_DIR="$BASE_DIR/data"
-BACKUP_DIR="$BASE_DIR/backup"
+BACKUP_DIR="$DATA_DIR/backup"
 
 DEPLOYED_DATA_DIR=/ebs/data/patclass

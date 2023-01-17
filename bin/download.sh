@@ -6,21 +6,22 @@ bin_dir=$(cd "$(dirname "$0")"; pwd)
 source "$bin_dir"/_common.sh
 cd "$DATA_DIR"
 
-IPC_FILE=ipc_scheme_20220101.zip
-CPC_FILE=CPCSchemeXML202205.zip
+ipc_version=20230101
+cpc_version=202301
+ipc_file="ipc_scheme_${ipc_version}.zip"
+cpc_file="CPCSchemeXML${cpc_version}.zip"
 
 
 echo "Downloading CPC, IPC and USPC patent classification data..."
 echo
 
-# While we're at it, also get the jquery-ui-fancytree widget required by pat-clas-ui.iA
-for url in "https://www.cooperativepatentclassification.org/sites/default/files/cpc/bulk/$CPC_FILE" \
-      "https://www.wipo.int/ipc/itos4ipc/ITSupport_and_download_area//20220101/MasterFiles/$IPC_FILE" ; do
+for url in "https://www.cooperativepatentclassification.org/sites/default/files/cpc/bulk/$cpc_file" \
+      "https://www.wipo.int/ipc/itos4ipc/ITSupport_and_download_area/$ipc_version/MasterFiles/$ipc_file" ; do
   echo "Downloading $url..."
   wget --no-clobber $url
 done
 
-  #http://patents.reedtech.com/downloads/PatentClassInfo/ClassData/classdefs.zip
+#http://patents.reedtech.com/downloads/PatentClassInfo/ClassData/classdefs.zip
 
 # The USPC zip file contains a DTD "classdef.dtd" but it is not a valid XML DTD (presumably SGML?)
 # The USPC data refers to a DTD "xclassdef.dtd", so this file must exist.
@@ -45,6 +46,7 @@ rsync -av --ignore-errors "$BACKUP_DIR"/classdefs-patched.zip "$DATA_DIR"/
 #    echo
 #fi
 
+# While we're at it, also get the jquery-ui-fancytree widget required by pat-clas-ui.iA
 if [[ ! -f jquery.fancytree-2.0.0-4.zip ]] ; then
     echo "Download and install jquery-ui-fancytree into pat-clas-ui"
     wget --no-clobber https://github.com/mar10/fancytree/releases/download/v2.0.0-4/jquery.fancytree-2.0.0-4.zip
