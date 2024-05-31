@@ -6,16 +6,16 @@ bin_dir=$(cd "$(dirname "$0")"; pwd)
 source "$bin_dir"/_common.sh
 cd "$DATA_DIR"
 
-ipc_version=20230101
-cpc_version=202301
+ipc_version=20240101
+cpc_version=202405
+
 ipc_file="ipc_scheme_${ipc_version}.zip"
 cpc_file="CPCSchemeXML${cpc_version}.zip"
-
 
 echo "Downloading CPC, IPC and USPC patent classification data..."
 echo
 
-for url in "https://www.cooperativepatentclassification.org/sites/default/files/cpc/bulk/$cpc_file" \
+for url in "https://www.cooperativepatentclassification.org/sites/default/files/2024_05_prerelease/$cpc_file" \
       "https://www.wipo.int/ipc/itos4ipc/ITSupport_and_download_area/$ipc_version/MasterFiles/$ipc_file" ; do
   echo "Downloading $url..."
   wget --no-clobber $url
